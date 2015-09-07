@@ -23,6 +23,7 @@ describe('gitignore parser', function () {
         this.gitignore.accepts('test/index.js').should.be.true();
         this.gitignore.accepts('wat/test/index.js').should.be.true();
         this.gitignoreNoNegatives.accepts('test/index.js').should.be.true();
+        this.gitignoreNoNegatives.accepts('node_modules.json').should.be.true();
       });
 
       it('should not accept the given filenames', function () {
@@ -62,6 +63,7 @@ describe('gitignore parser', function () {
         this.gitignore.denies('wat/test/index.js').should.be.false();
         this.gitignoreNoNegatives.denies('test/index.js').should.be.false();
         this.gitignoreNoNegatives.denies('wat/test/index.js').should.be.false();
+        this.gitignoreNoNegatives.denies('node_modules.json').should.be.false();
       });
 
       it('should deny the given directory', function () {
