@@ -27,6 +27,7 @@ describe('gitignore parser', function () {
 
       it('should not accept the given filenames', function () {
         this.gitignore.accepts('test.swp').should.be.false();
+        this.gitignore.accepts('foo/test.swp').should.be.false();
         this.gitignore.accepts('node_modules/wat.js').should.be.false();
         this.gitignore.accepts('foo/bar.wat').should.be.false();
         this.gitignoreNoNegatives.accepts('node_modules/wat.js').should.be.false();
@@ -50,6 +51,7 @@ describe('gitignore parser', function () {
     describe('denies()', function () {
       it('should deny the given filenames', function () {
         this.gitignore.denies('test.swp').should.be.true();
+        this.gitignore.denies('foo/test.swp').should.be.true();
         this.gitignore.denies('node_modules/wat.js').should.be.true();
         this.gitignore.denies('foo/bar.wat').should.be.true();
         this.gitignoreNoNegatives.denies('node_modules/wat.js').should.be.true();
