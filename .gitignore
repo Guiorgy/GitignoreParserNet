@@ -17,6 +17,9 @@
 # Ignore some deep sub folders
 /othernonexistent/**/what
 
+# Ignore deep folders with more than one wildcard
+*/**/__MACOSX/**/*
+
 # Unignore some other sub folders
 !/othernonexistent/**/what/foo
 
