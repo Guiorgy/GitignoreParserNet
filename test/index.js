@@ -1,6 +1,9 @@
 var LIB = require('../lib');
 var fs = require('fs');
+var path = require('path');
 var assert = require('assert');
+var testgenerator = require('@gerhobbelt/markdown-it-testgen');
+
 
 var FIXTURE = fs.readFileSync(__dirname + '/../.gitignore', 'utf8');
 var NO_NEGATIVES_FIXTURE = fs.readFileSync(__dirname + '/./.gitignore-no-negatives', 'utf8');
@@ -16,9 +19,9 @@ describe('gitignore parser', function() {
       var parsed = LIB.parse('a/**/b');
       assert.deepEqual(parsed, [
    [
-     /^((a\/.+\/b))/,
-     /^(((a\b)([\/]?(.+\b|$))([\/]?(b\b|$))))/
-   ],
+    /(?:^a\/.+\/b)/,
+     /(?:(?:a\b)(?:[\/]?(?:.+\b|$))(?:[\/]?(?:b\b|$)))/
+    ],
    [
      /$^/,
      /$^/
@@ -31,8 +34,8 @@ describe('gitignore parser', function() {
       var parsed = LIB.parse('a/b*c');
       assert.deepEqual(parsed, [
   [
-    /^((a\/b[^\/]+c))/,
-    /^(((a\b)([\/]?(b[^\/]+c\b|$))))/
+    /(?:^a\/b[^\/]+c)/,
+    /(?:(?:a\b)(?:[\/]?(?:b[^\/]+c\b|$)))/
   ],
   [
     /$^/,
@@ -46,8 +49,8 @@ describe('gitignore parser', function() {
       var parsed = LIB.parse('a/b?');
       assert.deepEqual(parsed, [
   [
-    /^((a\/b[^\/]))/,
-    /^(((a\b)([\/]?(b[^\/]\b|$))))/
+   /(?:^a\/b[^\/])/,
+    /(?:(?:a\b)(?:[\/]?(?:b[^\/]\b|$)))/
   ],
   [
     /$^/,
@@ -61,9 +64,60 @@ describe('gitignore parser', function() {
       var parsed = LIB.parse('a/b.c[d](e){f}\\slash^_$+$$$');
       assert.deepEqual(parsed, [
   [
-    /^((a\/b\.c\[d\]\(e\)\{f\}\\slash\^_\$\+\$\$\$))/,
-    /^(((a\b)([\/]?(b\.c\[d\]\(e\)\{f\}\\slash\^_\$\+\$\$\$\b|$))))/
+    /(?:^a\/b\.c[d]\(e\)\{f\}\\slash\^_\$\+\$\$\$)/,
+    /(?:(?:a\b)(?:[\/]?(?:b\.c[d]\(e\)\{f\}\\slash\^_\$\+\$\$\$\b|$)))/
   ],
+  [
+    /$^/,
+    /$^/
+  ]
+]
+);
+    });
+
+    it('should correctly parse character ranges', function() {
+      var parsed = LIB.parse('a[c-z$].[1-9-][\\[\\]A-Z]-\\[...]');
+      assert.deepEqual(parsed, [
+  [
+    /(?:a[c-z$]\.[1-9-][\[\]A-Z]\-\[\.\.\.\])/,
+    /(?:(?:a[c-z$]\.[1-9-][\[\]A-Z]\-\[\.\.\.\]\b))/
+     ],
+  [
+    /$^/,
+    /$^/
+  ]
+]
+);
+    });
+
+    it('should treat "/a" as rooted, while "b" should match anywhere', function() {
+      // see bullet 6 of https://git-scm.com/docs/gitignore#_pattern_format
+      // 
+      // If there is a separator at the beginning or middle (or both) of the pattern, 
+      // then the pattern is relative to the directory level of the particular 
+      // .gitignore file itself. Otherwise the pattern may also match at any level 
+      // below the .gitignore level.
+      var parsed = LIB.parse('/a\nb');
+      assert.deepEqual(parsed, [
+ [
+    /(?:^a)|(?:b)/,
+    /(?:(?:\b)(?:[\/]?(?:a\b|$)))|(?:(?:b\b))/
+  ],
+  [
+    /$^/,
+    /$^/
+  ]
+]
+);
+    });
+
+    it('should correctly transpile rooted and relative path specs', function() {
+      var parsed = LIB.parse('a/b\n/c/d\ne/\nf');
+      assert.deepEqual(parsed, [
+  [
+    /(?:^c\/d)|(?:^a\/b)|(?:e\/)|(?:f)/,
+    /(?:(?:\b)(?:[\/]?(?:c\b|$))(?:[\/]?(?:d\b|$)))|(?:(?:a\b)(?:[\/]?(?:b\b|$)))|(?:(?:e\b)(?:[\/]?(?:\b|$)))|(?:(?:f\b))/
+   ],
   [
     /$^/,
     /$^/
@@ -207,5 +261,16 @@ assert.strictEqual(gitignore.accepts('/ajax/libs/typescript/2.0.6-insiders.20161
       assert.strictEqual(gitignore.denies('packages/my-package/node-modules'), true);
       assert.strictEqual(gitignore.accepts('packages/my-package/node-modules'), false);
     });
+  });
+
+
+  testgenerator(path.join(__dirname, 'fixtures/gitignore.manpage.txt'), {
+    desc: 'gitignore specification / manpage'
+  }, {
+    render: function (text, env) {
+      var lines = text.split('\n');
+      var gitignore = LIB.compile(lines[0]);
+      return gitignore.accepts(lines[1]) ? 'pass' : 'fail';
+    }
   });
 });
