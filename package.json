@@ -10,7 +10,7 @@
   ],
   "main": "./lib/index.js",
   "devDependencies": {
-    "@gerhobbelt/markdown-it-testgen": "^0.1.6-12",
+    "@gerhobbelt/markdown-it-testgen": "0.1.6-14",
     "mocha": "8.0.1"
   },
   "repository": "codemix/gitignore-parser",

@@ -149,21 +149,21 @@ Want to read in your language or fix typos?
 Changes in the **gitignore** manual
 
 1.  2.22.2 → 2.27.0 no changes
-2.  [2.22.1 ![](/images/icons/green-dot.png) ![](/images/icons/green-dot.png) ![](/images/icons/green-dot.png) ![](/images/icons/green-dot.png) ![](/images/icons/green-dot.png) ![](/images/icons/green-dot.png) ![](/images/icons/red-dot.png) ![](/images/icons/red-dot.png)  _08/11/19_](/docs/gitignore/2.22.1) 
-3.  [2.22.0 ![](/images/icons/red-dot.png) ![](/images/icons/red-dot.png) ![](/images/icons/red-dot.png) ![](/images/icons/red-dot.png) ![](/images/icons/red-dot.png) ![](/images/icons/red-dot.png) ![](/images/icons/red-dot.png) ![](/images/icons/red-dot.png)  _06/07/19_](/docs/gitignore/2.22.0) 
+2.  [2.22.1   _08/11/19_](/docs/gitignore/2.22.1) 
+3.  [2.22.0   _06/07/19_](/docs/gitignore/2.22.0) 
 4.  2.20.1 → 2.21.3 no changes
-5.  [2.20.0 ![](/images/icons/green-dot.png) ![](/images/icons/red-dot.png) ![](/images/icons/red-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png)  _12/09/18_](/docs/gitignore/2.20.0) 
+5.  [2.20.0   _12/09/18_](/docs/gitignore/2.20.0) 
 6.  2.19.1 → 2.19.5 no changes
-7.  [2.19.0 ![](/images/icons/green-dot.png) ![](/images/icons/red-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png)  _09/10/18_](/docs/gitignore/2.19.0) 
+7.  [2.19.0   _09/10/18_](/docs/gitignore/2.19.0) 
 8.  2.17.0 → 2.18.4 no changes
-9.  [2.16.6 ![](/images/icons/green-dot.png) ![](/images/icons/green-dot.png) ![](/images/icons/green-dot.png) ![](/images/icons/green-dot.png) ![](/images/icons/red-dot.png) ![](/images/icons/red-dot.png) ![](/images/icons/red-dot.png)  _12/06/19_](/docs/gitignore/2.16.6) 
+9.  [2.16.6   _12/06/19_](/docs/gitignore/2.16.6) 
 10.  2.10.5 → 2.15.4 no changes
-11.  [2.9.5 ![](/images/icons/green-dot.png) ![](/images/icons/red-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png)  _07/30/17_](/docs/gitignore/2.9.5) 
+11.  [2.9.5   _07/30/17_](/docs/gitignore/2.9.5) 
 12.  2.5.6 → 2.8.6 no changes
-13.  [2.4.12 ![](/images/icons/green-dot.png) ![](/images/icons/red-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png)  _05/05/17_](/docs/gitignore/2.4.12) 
-14.  [2.3.10 ![](/images/icons/green-dot.png) ![](/images/icons/green-dot.png) ![](/images/icons/green-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png)  _09/28/15_](/docs/gitignore/2.3.10) 
+13.  [2.4.12   _05/05/17_](/docs/gitignore/2.4.12) 
+14.  [2.3.10   _09/28/15_](/docs/gitignore/2.3.10) 
 15.  2.2.3 no changes
-16.  [2.1.4 ![](/images/icons/green-dot.png) ![](/images/icons/red-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png) ![](/images/icons/grey-dot.png)  _12/17/14_](/docs/gitignore/2.1.4) 
+16.  [2.1.4   _12/17/14_](/docs/gitignore/2.1.4) 
 
 Check your version of git by running  
 **$** 
@@ -211,6 +211,15 @@ The underlying Git plumbing tools, such as _git ls-files_ and _git read-tree_, r
 *   A blank line matches no files, so it can serve as a separator for readability.
     
 *   A line starting with # serves as a comment. Put a backslash ("`\`") in front of the first hash for patterns that begin with a hash.
+
+.
+#comment
+\#file
+.
+#file ⟹ reject
+#comment ⟹ accept
+a/#file ⟹ reject
+.
     
 *   Trailing spaces are ignored unless they are quoted with backslash ("`\`").
     

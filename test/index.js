@@ -10,7 +10,7 @@ var NO_NEGATIVES_FIXTURE = fs.readFileSync(__dirname + '/./.gitignore-no-negativ
 
 describe('gitignore parser', function() {
   describe('parse()', function() {
-    xit('should parse some content', function() {
+    it('should parse some content', function() {
       var parsed = LIB.parse(FIXTURE);
       assert.strictEqual(parsed.length, 2);
     });
@@ -64,8 +64,8 @@ describe('gitignore parser', function() {
       var parsed = LIB.parse('a/b.c[d](e){f}\\slash^_$+$$$');
       assert.deepEqual(parsed, [
   [
-    /(?:^a\/b\.c[d]\(e\)\{f\}\\slash\^_\$\+\$\$\$)/,
-    /(?:(?:a\b)(?:[\/]?(?:b\.c[d]\(e\)\{f\}\\slash\^_\$\+\$\$\$\b|$)))/
+    /(?:^a\/b\.c[d]\(e\)\{f\}slash\^_\$\+\$\$\$)/,
+    /(?:(?:a\b)(?:[\/]?(?:b\.c[d]\(e\)\{f\}slash\^_\$\+\$\$\$\b|$)))/
   ],
   [
     /$^/,
@@ -225,7 +225,8 @@ describe('gitignore parser', function() {
     });
   });
 
-  xdescribe('Test case: a', function() {
+xdescribe('github issues & misc tests', function () {
+  describe('Test case: a', function() {
     it('should only accept a/2/a', function() {
       const gitignore = LIB.compile(fs.readFileSync(__dirname + '/a/.gitignore', 'utf8'));
       assert.strictEqual(gitignore.accepts('a/2/a'), true);
@@ -233,7 +234,7 @@ describe('gitignore parser', function() {
     });
   })
 
-  xdescribe('issue #12', function () {
+  describe('issue #12', function () {
     it('should not fail test A', function () {
             var gitignore = LIB.compile('/ajax/libs/bPopup/*b*');
       assert.strictEqual(gitignore.accepts('/ajax/libs/bPopup/0.9.0'), true);  //output false
@@ -255,22 +256,29 @@ assert.strictEqual(gitignore.accepts('/ajax/libs/typescript/2.0.6-insiders.20161
     });
   });
 
-  xdescribe('issue #12', function () {
+  describe('issue #14', function () {
     it('should not fail test A', function () {
             var gitignore = LIB.compile('node_modules');
       assert.strictEqual(gitignore.denies('packages/my-package/node-modules'), true);
       assert.strictEqual(gitignore.accepts('packages/my-package/node-modules'), false);
     });
   });
+});
 
 
   testgenerator(path.join(__dirname, 'fixtures/gitignore.manpage.txt'), {
-    desc: 'gitignore specification / manpage'
-  }, {
-    render: function (text, env) {
-      var lines = text.split('\n');
-      var gitignore = LIB.compile(lines[0]);
-      return gitignore.accepts(lines[1]) ? 'pass' : 'fail';
+    desc: 'gitignore specification / manpage',
+
+    test: function test_gitignore(fixture, options, md, env) {
+      var gitignore = LIB.compile(fixture.first.text);
+
+      var tests = fixture.second.text.split('\n').filter((l) => l.trim().length > 0);
+      for (let test of tests) {
+        let t = test.split('⟹').map((l) => l.trim());
+
+        assert.strictEqual((gitignore.denies(t[0]) ? 'reject' : 'accept'), t[1], 'expected: ' + test);
+      }
     }
-  });
+  })
+  
 });
