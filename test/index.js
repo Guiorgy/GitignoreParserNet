@@ -121,30 +121,30 @@ describe('gitignore parser', function() {
 
   describe('issue #12', function () {
     it('should not fail test A', function () {
-            var gitignore = parser.compile('/ajax/libs/bPopup/*b*');
+            var gitignore = LIB.compile('/ajax/libs/bPopup/*b*');
       assert.strictEqual(gitignore.accepts('/ajax/libs/bPopup/0.9.0'), true);  //output false
     });
 
     it('should not fail test B', function () {
-      var gitignore = parser.compile('/ajax/libs/jquery-form-validator/2.2');
+      var gitignore = LIB.compile('/ajax/libs/jquery-form-validator/2.2');
 assert.strictEqual(gitignore.accepts('/ajax/libs/jquery-form-validator/2.2.43'), true); //output false
     });
 
     it('should not fail test C', function () {
-      var gitignore = parser.compile('/ajax/libs/punycode/2.0');
+      var gitignore = LIB.compile('/ajax/libs/punycode/2.0');
 assert.strictEqual(gitignore.accepts('/ajax/libs/punycode/2.0.0'), true); //output false
     });
 
     it('should not fail test D', function () {
-      var gitignore = parser.compile('/ajax/libs/typescript/*dev*');
+      var gitignore = LIB.compile('/ajax/libs/typescript/*dev*');
 assert.strictEqual(gitignore.accepts('/ajax/libs/typescript/2.0.6-insiders.20161014'), true); //output false
     });
   });
 
   describe('issue #12', function () {
     it('should not fail test A', function () {
-            var gitignore = parser.compile('node_modules');
-      assert.strictEqual(gitignore.rejects('packages/my-package/node-modules'), true);
+            var gitignore = LIB.compile('node_modules');
+      assert.strictEqual(gitignore.denies('packages/my-package/node-modules'), true);
       assert.strictEqual(gitignore.accepts('packages/my-package/node-modules'), false);
     });
   });
