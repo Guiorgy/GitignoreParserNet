@@ -8,18 +8,17 @@
     ".gitignore",
     "git ignore"
   ],
-  "main": "lib/index.js",
+  "main": "./lib/index.js",
   "dependencies": {},
   "devDependencies": {
-    "mocha": "*",
-    "should": "*",
-    "expect.js": "*"
+    "expect.js": "^0.3.1",
+    "mocha": "^3.5.0",
+    "should": "^11.2.1"
   },
   "repository": {
     "type": "git",
     "url": "http://github.com/codemix/gitignore-parser.git"
   },
-  "main": "./lib/index.js",
   "directories": {
     "lib": "./lib"
   },
