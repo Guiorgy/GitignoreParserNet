@@ -1,6 +1,6 @@
 {
   "name": "@gerhobbelt/gitignore-parser",
-  "version": "0.0.2",
+  "version": "0.0.3-1",
   "description": "A simple .gitignore parser.",
   "keywords": [
     "gitignore",
@@ -20,8 +20,10 @@
     "node": ">=10"
   },
   "scripts": {
+    "build": "npm test",
     "test": "mocha",
-    "watch": "mocha --watch"
+    "watch": "mocha --watch",
+    "pub": "npm publish --public"
   },
   "author": {
     "name": "Charles Pick",
