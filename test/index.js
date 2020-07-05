@@ -140,4 +140,12 @@ assert.strictEqual(gitignore.accepts('/ajax/libs/punycode/2.0.0'), true); //outp
 assert.strictEqual(gitignore.accepts('/ajax/libs/typescript/2.0.6-insiders.20161014'), true); //output false
     });
   });
+
+  describe('issue #12', function () {
+    it('should not fail test A', function () {
+            var gitignore = parser.compile('node_modules');
+      assert.strictEqual(gitignore.rejects('packages/my-package/node-modules'), true);
+      assert.strictEqual(gitignore.accepts('packages/my-package/node-modules'), false);
+    });
+  });
 });
