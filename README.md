@@ -2,7 +2,7 @@
 
 A very simple `.gitignore` parser for node.js.
 
-[![Build Status](https://travis-ci.org/codemix/gitignore-parser.svg?branch=master)](https://travis-ci.org/codemix/gitignore-parser)
+[![Build Status](https://travis-ci.org/GerHobbelt/gitignore-parser.svg?branch=master)](https://travis-ci.org/GerHobbelt/gitignore-parser)
 
 
 ## Installation
@@ -13,7 +13,7 @@ A very simple `.gitignore` parser for node.js.
 ## Usage
 
 ```js
-var parser = require('gitignore-parser'),
+var parser = require('@gerhobbelt/gitignore-parser'),
     fs = require('fs');
 
 var gitignore = parser.compile(fs.readFileSync('.gitignore', 'utf8'));
@@ -47,7 +47,7 @@ files.filter(gitignore.denies);
 ```
 
 
-### License
+## License
 
 Apache 2, see [LICENSE.md](./LICENSE.md).
 
