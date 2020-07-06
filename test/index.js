@@ -5,11 +5,11 @@ var assert = require('assert');
 var testgenerator = require('@gerhobbelt/markdown-it-testgen');
 
 
-var FIXTURE = fs.readFileSync(__dirname + '/../.gitignore', 'utf8');
+var FIXTURE = fs.readFileSync(__dirname + '/./.gitignore-fixture', 'utf8');
 var NO_NEGATIVES_FIXTURE = fs.readFileSync(__dirname + '/./.gitignore-no-negatives', 'utf8');
 
 describe('gitignore parser', function() {
-  describe('parse()', function() {
+  xdescribe('parse()', function() {
     it('should parse some content', function() {
       var parsed = LIB.parse(FIXTURE);
       assert.strictEqual(parsed.length, 2);
@@ -19,8 +19,8 @@ describe('gitignore parser', function() {
       var parsed = LIB.parse('a/**/b');
       assert.deepEqual(parsed, [
    [
-    /(?:^a\/.+\/b)/,
-     /(?:(?:a\b)(?:[\/]?(?:.+\b|$))(?:[\/]?(?:b\b|$)))/
+   /(?:^\/a(?:\/|(?:\/.+\/))b\/?$)/,
+    /(?:(?:\/a\/?$\b)(?:[\/]?(?:\/.[^\/]*\/?$\b|$))(?:[\/]?(?:\/b\/?$\b|$)))/
     ],
    [
      /$^/,
@@ -34,9 +34,9 @@ describe('gitignore parser', function() {
       var parsed = LIB.parse('a/b*c');
       assert.deepEqual(parsed, [
   [
-    /(?:^a\/b[^\/]+c)/,
-    /(?:(?:a\b)(?:[\/]?(?:b[^\/]+c\b|$)))/
-  ],
+   /(?:^\/a\/b[^\/]*c\/?$)/,
+    /(?:(?:\/a\/?$\b)(?:[\/]?(?:\/b[^\/]*c\/?$\b|$)))/
+   ],
   [
     /$^/,
     /$^/
@@ -49,8 +49,8 @@ describe('gitignore parser', function() {
       var parsed = LIB.parse('a/b?');
       assert.deepEqual(parsed, [
   [
-   /(?:^a\/b[^\/])/,
-    /(?:(?:a\b)(?:[\/]?(?:b[^\/]\b|$)))/
+   /(?:^\/a\/b[^\/]\/?$)/,
+    /(?:(?:\/a\/?$\b)(?:[\/]?(?:\/b[^\/]\/?$\b|$)))/
   ],
   [
     /$^/,
@@ -64,8 +64,8 @@ describe('gitignore parser', function() {
       var parsed = LIB.parse('a/b.c[d](e){f}\\slash^_$+$$$');
       assert.deepEqual(parsed, [
   [
-    /(?:^a\/b\.c[d]\(e\)\{f\}slash\^_\$\+\$\$\$)/,
-    /(?:(?:a\b)(?:[\/]?(?:b\.c[d]\(e\)\{f\}slash\^_\$\+\$\$\$\b|$)))/
+   /(?:^\/a\/b\.c[d]\(e\)\{f\}slash\^_\$\+\$\$\$\/?$)/,
+    /(?:(?:\/a\/?$\b)(?:[\/]?(?:\/b\.c[d]\(e\)\{f\}slash\^_\$\+\$\$\$\/?$\b|$)))/
   ],
   [
     /$^/,
@@ -79,9 +79,9 @@ describe('gitignore parser', function() {
       var parsed = LIB.parse('a[c-z$].[1-9-][\\[\\]A-Z]-\\[...]');
       assert.deepEqual(parsed, [
   [
-    /(?:a[c-z$]\.[1-9-][\[\]A-Z]\-\[\.\.\.\])/,
-    /(?:(?:a[c-z$]\.[1-9-][\[\]A-Z]\-\[\.\.\.\]\b))/
-     ],
+    /(?:\/a[c-z$]\.[1-9-][\[\]A-Z]\-\[\.\.\.\]\/?$)/,
+    /(?:(?:\/a[c-z$]\.[1-9-][\[\]A-Z]\-\[\.\.\.\]\/?$\b))/
+    ],
   [
     /$^/,
     /$^/
@@ -100,9 +100,9 @@ describe('gitignore parser', function() {
       var parsed = LIB.parse('/a\nb');
       assert.deepEqual(parsed, [
  [
-    /(?:^a)|(?:b)/,
-    /(?:(?:\b)(?:[\/]?(?:a\b|$)))|(?:(?:b\b))/
-  ],
+   /(?:^\/a\/?$)|(?:\/b\/?$)/,
+    /(?:(?:\/\/?$\b)(?:[\/]?(?:\/a\/?$\b|$)))|(?:(?:\/b\/?$\b))/
+   ],
   [
     /$^/,
     /$^/
@@ -115,8 +115,8 @@ describe('gitignore parser', function() {
       var parsed = LIB.parse('a/b\n/c/d\ne/\nf');
       assert.deepEqual(parsed, [
   [
-    /(?:^c\/d)|(?:^a\/b)|(?:e\/)|(?:f)/,
-    /(?:(?:\b)(?:[\/]?(?:c\b|$))(?:[\/]?(?:d\b|$)))|(?:(?:a\b)(?:[\/]?(?:b\b|$)))|(?:(?:e\b)(?:[\/]?(?:\b|$)))|(?:(?:f\b))/
+    /(?:^\/c\/d\/?$)|(?:^\/a\/b\/?$)|(?:\/e\/)|(?:\/f\/?$)/,
+    /(?:(?:\/\/?$\b)(?:[\/]?(?:\/c\/?$\b|$))(?:[\/]?(?:\/d\/?$\b|$)))|(?:(?:\/a\/?$\b)(?:[\/]?(?:\/b\/?$\b|$)))|(?:(?:\/e\/?$\b)(?:[\/]?(?:\/\/?$\b|$)))|(?:(?:\/f\/?$\b))/
    ],
   [
     /$^/,
@@ -127,7 +127,7 @@ describe('gitignore parser', function() {
     });
   });
 
-  xdescribe('compile()', function() {
+  describe('compile()', function() {
     beforeEach(function() {
       this.gitignore = LIB.compile(FIXTURE);
       this.gitignoreNoNegatives = LIB.compile(NO_NEGATIVES_FIXTURE);
@@ -144,7 +144,7 @@ describe('gitignore parser', function() {
       it('should not accept the given filenames', function () {
         assert.strictEqual(this.gitignore.accepts('test.swp'), false);
         assert.strictEqual(this.gitignore.accepts('foo/test.swp'), false);
-        assert.strictEqual(this.gitignore.accepts('node_modules/wat.js'), false);
+        assert.strictEqual(this.gitignore.accepts('node_modules/wat.js', false), false, 'node_modules/wat.js');
         assert.strictEqual(this.gitignore.accepts('foo/bar.wat'), false);
         assert.strictEqual(this.gitignoreNoNegatives.accepts('node_modules/wat.js'), false);
       });
@@ -269,14 +269,30 @@ assert.strictEqual(gitignore.accepts('/ajax/libs/typescript/2.0.6-insiders.20161
   testgenerator(path.join(__dirname, 'fixtures/gitignore.manpage.txt'), {
     desc: 'gitignore specification / manpage',
 
-    test: function test_gitignore(fixture, options, md, env) {
+    test: function test_gitignore(_it_, title, fixture, options, md, env) {
       var gitignore = LIB.compile(fixture.first.text);
 
-      var tests = fixture.second.text.split('\n').filter((l) => l.trim().length > 0);
-      for (let test of tests) {
+      function mkTest(title, test) {
         let t = test.split('⟹').map((l) => l.trim());
+        let expect = t[1].toLowerCase();
+            
+            it(title, function () {
+          assert.strictEqual((gitignore.denies(t[0], expect === 'reject') ? 'reject' : 'accept'), expect, 'expected: ' + test);
+        })
+      }
 
-        assert.strictEqual((gitignore.denies(t[0]) ? 'reject' : 'accept'), t[1], 'expected: ' + test);
+      var tests = fixture.second.text.split('\n');
+      var line = fixture.second.range[0];
+      for (let i = 0; i < tests.length; i++) {
+        let test = tests[i].trim();
+        // don't do this bit in a .filter() expression as we want to keep our
+        // line numbers intact for the real tests:
+        if (test.length === 0 || test.startsWith('#')) {
+          continue;
+        }
+
+        // watch out for closure use inside loop! --> use indirection via mkTest()
+        mkTest('line ' + (line + i + 1), test);
       }
     }
   })
