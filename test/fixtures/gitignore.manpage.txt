@@ -216,9 +216,9 @@ The underlying Git plumbing tools, such as _git ls-files_ and _git read-tree_, r
 #comment
 \#file
 .
-#file ⟹ reject
-#comment ⟹ accept
-a/#file ⟹ reject
+#file                                   ⟹ reject
+#comment                                ⟹ accept
+a/#file                                 ⟹ reject
 .
 
 *   Trailing spaces are ignored unless they are quoted with backslash ("`\`").
@@ -230,10 +230,10 @@ a/#file ⟹ reject
 !important!.txt
 !file
 .
-important!.txt ⟹ accept
-!important!.txt ⟹ reject
-file ⟹ accept
-!file ⟹ accept
+important!.txt                          ⟹ accept & inspects
+!important!.txt                         ⟹ reject
+file                                    ⟹ accept & inspects
+!file                                   ⟹ accept & does not inspect
 .
 
 *   The slash _/_ is used as the directory separator. Separators may occur at the beginning, middle or end of the `.gitignore` search pattern.
@@ -247,36 +247,36 @@ d/
 /e/
 f/g/
 .
-a ⟹ reject
-a/ ⟹ reject
-/a ⟹ reject
-/a/ ⟹ reject
-rel/a ⟹ accept
-rel/a/ ⟹ accept
-b/c ⟹ reject
-b/c/ ⟹ reject
-/b/c ⟹ reject
-/b/c/ ⟹ reject
-rel/b/c ⟹ accept
-rel/b/c/ ⟹ accept
-d ⟹ accept
-d/ ⟹ reject
-/d ⟹ accept
-/d/ ⟹ reject
-rel/d ⟹ accept
-rel/d/ ⟹ reject
-e ⟹ accept
-e/ ⟹ reject
-/e ⟹ accept
-/e/ ⟹ reject
-rel/e ⟹ accept
-rel/e/ ⟹ accept
-f/g ⟹ accept
-f/g/ ⟹ reject
-/f/g ⟹ accept
-/f/g/ ⟹ reject
-rel/f/g ⟹ accept
-rel/f/g/ ⟹ accept
+a                                       ⟹ reject
+a/                                      ⟹ reject
+/a                                      ⟹ reject
+/a/                                     ⟹ reject
+rel/a                                   ⟹ accept
+rel/a/                                  ⟹ accept
+b/c                                     ⟹ reject
+b/c/                                    ⟹ reject
+/b/c                                    ⟹ reject
+/b/c/                                   ⟹ reject
+rel/b/c                                 ⟹ accept
+rel/b/c/                                ⟹ accept
+d                                       ⟹ accept
+d/                                      ⟹ reject
+/d                                      ⟹ accept
+/d/                                     ⟹ reject
+rel/d                                   ⟹ accept
+rel/d/                                  ⟹ reject
+e                                       ⟹ accept
+e/                                      ⟹ reject
+/e                                      ⟹ accept
+/e/                                     ⟹ reject
+rel/e                                   ⟹ accept
+rel/e/                                  ⟹ accept
+f/g                                     ⟹ accept
+f/g/                                    ⟹ reject
+/f/g                                    ⟹ accept
+/f/g/                                   ⟹ reject
+rel/f/g                                 ⟹ accept
+rel/f/g/                                ⟹ accept
 .
 
 *   If there is a separator at the end of the pattern then the pattern will only match directories, otherwise the pattern can match both files and directories.
@@ -286,15 +286,15 @@ rel/f/g/ ⟹ accept
 .
 doc/frotz/
 .
-a/doc/frotz/ ⟹ accept
-doc/frotz/ ⟹ reject
+a/doc/frotz/                            ⟹ accept
+doc/frotz/                              ⟹ reject
 .
 
 .
 frotz/
 .
-frotz/ ⟹ reject
-a/frotz/ ⟹ reject
+frotz/                                  ⟹ reject
+a/frotz/                                ⟹ reject
 .
 
 *   An asterisk "`*`" matches anything except a slash. The character "`?`" matches any one character except "`/`". The range notation, e.g. `[a-zA-Z]`, can be used to match one of the characters in a range. See fnmatch(3) and the FNM\_PATHNAME flag for a more detailed description.
@@ -302,55 +302,55 @@ a/frotz/ ⟹ reject
 .
 fro*
 .
-fr ⟹ accept
-fro ⟹ reject
-frot ⟹ reject
-frot/ ⟹ reject
-frot/blub ⟹ accept
-frotz ⟹ reject
-frotz/ ⟹ reject
-frotz/didi ⟹ accept
-digi/frotz ⟹ reject
-digi/frotz/ ⟹ reject
-digi/frotz/mau ⟹ accept
-r/frot ⟹ reject
-r/frot/ ⟹ reject
-r/frot/mau ⟹ accept
+fr                                      ⟹ accept
+fro                                     ⟹ reject
+frot                                    ⟹ reject
+frot/                                   ⟹ reject
+frot/blub                               ⟹ accept
+frotz                                   ⟹ reject
+frotz/                                  ⟹ reject
+frotz/didi                              ⟹ accept
+digi/frotz                              ⟹ reject
+digi/frotz/                             ⟹ reject
+digi/frotz/mau                          ⟹ accept
+r/frot                                  ⟹ reject
+r/frot/                                 ⟹ reject
+r/frot/mau                              ⟹ accept
 .
 
 .
 fro?
 .
-fr ⟹ accept
-fro ⟹ accept
-frot ⟹ reject
-frot/ ⟹ reject
-frot/blub ⟹ accept
-frotz ⟹ accept
-frotz/ ⟹ accept
-frotz/didi ⟹ accept
-digi/frotz/ ⟹ accept
-digi/frotz/mau ⟹ accept
-r/frot ⟹ reject
-r/frot/ ⟹ reject
-r/frot/mau ⟹ accept
+fr                                      ⟹ accept
+fro                                     ⟹ accept
+frot                                    ⟹ reject
+frot/                                   ⟹ reject
+frot/blub                               ⟹ accept
+frotz                                   ⟹ accept
+frotz/                                  ⟹ accept
+frotz/didi                              ⟹ accept
+digi/frotz/                             ⟹ accept
+digi/frotz/mau                          ⟹ accept
+r/frot                                  ⟹ reject
+r/frot/                                 ⟹ reject
+r/frot/mau                              ⟹ accept
 .
 
 .
 fro[q-z]
 .
-fr ⟹ accept
-fro ⟹ accept
-frot ⟹ reject
-frot/ ⟹ reject
-frot/blub ⟹ accept
-frotz ⟹ accept
-frotz/ ⟹ accept
-frotz/blub ⟹ accept
-r/frot ⟹ reject
-r/frot/ ⟹ reject
-r/frot/mau ⟹ accept
-frop ⟹ accept
+fr                                      ⟹ accept
+fro                                     ⟹ accept
+frot                                    ⟹ reject
+frot/                                   ⟹ reject
+frot/blub                               ⟹ accept
+frotz                                   ⟹ accept
+frotz/                                  ⟹ accept
+frotz/blub                              ⟹ accept
+r/frot                                  ⟹ reject
+r/frot/                                 ⟹ reject
+r/frot/mau                              ⟹ accept
+frop                                    ⟹ accept
 .
 
 Two consecutive asterisks ("`**`") in patterns matched against full pathname may have special meaning:
@@ -364,74 +364,89 @@ Two consecutive asterisks ("`**`") in patterns matched against full pathname may
 .
 **/foo
 .
-foo ⟹ reject
-bar ⟹ accept
-a/foo ⟹ reject
-a/food ⟹ accept
-a/foo/ ⟹ reject
-a/foo/b ⟹ accept
-a/foo-fi/b ⟹ accept
-a/b/c/d/foo ⟹ reject
-a/b/c/d/foo/ ⟹ reject
-a/b/c/d/foo/e ⟹ accept
+foo                                     ⟹ reject
+bar                                     ⟹ accept
+a/foo                                   ⟹ reject
+a/food                                  ⟹ accept
+a/foo/                                  ⟹ reject
+a/foo/b                                 ⟹ accept
+a/foo-fi/b                              ⟹ accept
+a/b/c/d/foo                             ⟹ reject
+a/b/c/d/foo/                            ⟹ reject
+a/b/c/d/foo/e                           ⟹ accept
 .
 
 .
 foo
 .
-foo ⟹ reject
-bar ⟹ accept
-a/foo ⟹ reject
-a/food ⟹ accept
-a/foo/ ⟹ reject
-a/foo/b ⟹ accept
-a/foo-fi/b ⟹ accept
-a/b/c/d/foo ⟹ reject
-a/b/c/d/foot ⟹ accept
-a/b/c/d/foo/e ⟹ accept
+foo                                     ⟹ reject
+bar                                     ⟹ accept
+a/foo                                   ⟹ reject
+a/food                                  ⟹ accept
+a/foo/                                  ⟹ reject
+a/foo/b                                 ⟹ accept
+a/foo-fi/b                              ⟹ accept
+a/b/c/d/foo                             ⟹ reject
+a/b/c/d/foot                            ⟹ accept
+a/b/c/d/foo/e                           ⟹ accept
 .
 
 .
 **/foo/bar
 .
-foo/bar ⟹ reject
-foo ⟹ accept
-bar ⟹ accept
-a/foo/bar ⟹ reject
-a/foo/barred ⟹ accept
-a/foo/bar/ ⟹ reject
-a/foo/bar/b ⟹ accept
-a/foo/barfly/b ⟹ accept
-a/b/c/d/foo/bar ⟹ reject
-a/b/c/d/foo/bar/ ⟹ reject
-a/b/c/d/foo/bar/e ⟹ accept
+foo/bar                                 ⟹ reject
+foo                                     ⟹ accept
+bar                                     ⟹ accept
+a/foo/bar                               ⟹ reject
+a/foo/barred                            ⟹ accept
+a/foo/bar/                              ⟹ reject
+a/foo/bar/b                             ⟹ accept
+a/foo/barfly/b                          ⟹ accept
+a/b/c/d/foo/bar                         ⟹ reject
+a/b/c/d/foo/bar/                        ⟹ reject
+a/b/c/d/foo/bar/e                       ⟹ accept
 .
 
 .
 foo/**
 .
-foo ⟹ reject
-bar ⟹ accept
-a/foo ⟹ accept
-a/food ⟹ accept
-foo/a ⟹ reject
-foo-fi/a ⟹ accept
-foo/a/b/c/d ⟹ reject
+foo                                     ⟹ reject
+bar                                     ⟹ accept
+a/foo                                   ⟹ accept
+a/food                                  ⟹ accept
+foo/a                                   ⟹ reject
+foo-fi/a                                ⟹ accept
+foo/a/b/c/d                             ⟹ reject
 .
 
 .
 foo/**/bar
 .
-foo/bar ⟹ reject
-foo ⟹ accept
-bar ⟹ accept
-foo/b/bar ⟹ reject
-a/foo/b/bar ⟹ accept
-foo/a/b/bar ⟹ reject
-foo/a/b/bar/ ⟹ reject
-foo/a/b/bar/c ⟹ accept
-c/foo/a/b/bar ⟹ accept
+foo/bar                                 ⟹ reject
+foo                                     ⟹ accept
+bar                                     ⟹ accept
+foo/b/bar                               ⟹ reject
+a/foo/b/bar                             ⟹ accept
+foo/a/b/bar                             ⟹ reject
+foo/a/b/bar/                            ⟹ reject
+foo/a/b/bar/c                           ⟹ accept
+c/foo/a/b/bar                           ⟹ accept
 .
+
+.
+foo/**/*
+.
+foo/bar                                 ⟹ reject
+foo                                     ⟹ accept
+bar                                     ⟹ accept
+foo/b/bar                               ⟹ reject
+a/foo/b/bar                             ⟹ accept
+foo/a/b/bar                             ⟹ reject
+foo/a/b/bar/                            ⟹ reject
+foo/a/b/bar/c                           ⟹ reject
+c/foo/a/b/bar                           ⟹ accept
+.
+
 
 *   Other consecutive asterisks are considered regular asterisks and will match according to the previous rules.
 
@@ -456,12 +471,12 @@ To stop tracking a file that is currently tracked, use _git rm --cached_.
 .
 hello.*
 .
-hello ⟹ accept
-hello. ⟹ reject
-hello.txt ⟹ reject
-hello.c ⟹ reject
-a/hello.java ⟹ reject
-hello-baby ⟹ accept
+hello                                   ⟹ accept
+hello.                                  ⟹ reject
+hello.txt                               ⟹ reject
+hello.c                                 ⟹ reject
+a/hello.java                            ⟹ reject
+hello-baby                              ⟹ accept
 .
 
 *   The pattern `foo/` will match a directory `foo` and paths underneath it, but will not match a regular file or a symbolic link `foo` (this is consistent with the way how pathspec works in general in Git)
@@ -469,15 +484,15 @@ hello-baby ⟹ accept
 .
 foo/
 .
-foo/ ⟹ reject
-foo/f ⟹ accept
-foo ⟹ accept
-a/foo ⟹ accept
-a/foo/ ⟹ reject
-a/foo/f ⟹ accept
-a/b/foo/ ⟹ reject
-a/b/foo/f ⟹ accept
-a/foo ⟹ accept
+foo/                                    ⟹ reject
+foo/f                                   ⟹ accept
+foo                                     ⟹ accept
+a/foo                                   ⟹ accept
+a/foo/                                  ⟹ reject
+a/foo/f                                 ⟹ accept
+a/b/foo/                                ⟹ reject
+a/b/foo/f                               ⟹ accept
+a/foo                                   ⟹ accept
 .
 
 *   The pattern `doc/frotz` and `/doc/frotz` have the same effect in any `.gitignore` file. In other words, a leading slash is not relevant if there is already a middle slash in the pattern.
@@ -485,33 +500,33 @@ a/foo ⟹ accept
 .
 doc/frotz
 .
-doc/frotz/ ⟹ reject
-doc/frotz/f ⟹ accept
-doc/frotz ⟹ reject
-a/doc/frotz ⟹ accept
-a/doc/frotz/ ⟹ accept
+doc/frotz/                              ⟹ reject
+doc/frotz/f                             ⟹ accept
+doc/frotz                               ⟹ reject
+a/doc/frotz                             ⟹ accept
+a/doc/frotz/                            ⟹ accept
 
-/doc/frotz/ ⟹ reject
-/doc/frotz/f ⟹ accept
-/doc/frotz ⟹ reject
-/a/doc/frotz ⟹ accept
-/a/doc/frotz/ ⟹ accept
+/doc/frotz/                             ⟹ reject
+/doc/frotz/f                            ⟹ accept
+/doc/frotz                              ⟹ reject
+/a/doc/frotz                            ⟹ accept
+/a/doc/frotz/                           ⟹ accept
 .
 
 .
 /doc/frotz
 .
-doc/frotz/ ⟹ reject
-doc/frotz/f ⟹ accept
-doc/frotz ⟹ reject
-a/doc/frotz ⟹ accept
-a/doc/frotz/ ⟹ accept
+doc/frotz/                              ⟹ reject
+doc/frotz/f                             ⟹ accept
+doc/frotz                               ⟹ reject
+a/doc/frotz                             ⟹ accept
+a/doc/frotz/                            ⟹ accept
 
-/doc/frotz/ ⟹ reject
-/doc/frotz/f ⟹ accept
-/doc/frotz ⟹ reject
-/a/doc/frotz ⟹ accept
-/a/doc/frotz/ ⟹ accept
+/doc/frotz/                             ⟹ reject
+/doc/frotz/f                            ⟹ accept
+/doc/frotz                              ⟹ reject
+/a/doc/frotz                            ⟹ accept
+/a/doc/frotz/                           ⟹ accept
 .
 
 *   The pattern "foo/\*", matches "foo/test.json" (a regular file), "foo/bar" (a directory), but it does not match "foo/bar/hello.c" (a regular file), as the asterisk in the pattern does not match "bar/hello.c" which has a slash in it.
@@ -519,10 +534,10 @@ a/doc/frotz/ ⟹ accept
 .
 foo/*
 .
-foo/test.json ⟹ reject
-foo/bar ⟹ reject
-foo/bar/ ⟹ reject
-foo/bar/hello.c ⟹ accept
+foo/test.json                           ⟹ reject
+foo/bar                                 ⟹ reject
+foo/bar/                                ⟹ reject
+foo/bar/hello.c                         ⟹ accept
 .
 
     $ git status
@@ -558,11 +573,13 @@ foo/bar/hello.c ⟹ accept
 # except foo.html which is maintained by hand
 !foo.html
 .
-Documentation/foo.html ⟹ accept
-Documentation/gitignore.html ⟹ reject
-file.o ⟹ reject
-lib.a ⟹ reject
-src/internal.o ⟹ reject
+Documentation/foo.html                  ⟹ accept & inspects
+Documentation/gitignore.html            ⟹ reject
+/foo.html                               ⟹ accept & inspects
+/gitignore.html                         ⟹ reject
+file.o                                  ⟹ reject
+lib.a                                   ⟹ reject
+src/internal.o                          ⟹ reject
 .
 
 Another example:
@@ -578,23 +595,23 @@ The second .gitignore prevents Git from ignoring `arch/foo/kernel/vmlinux.lds.S`
 .
 vmlinux*
 .
-arch/foo/kernel/vmlinux.lds.S ⟹ reject
-arch/foo/kernel/vmlinux ⟹ reject
+arch/foo/kernel/vmlinux.lds.S           ⟹ reject
+arch/foo/kernel/vmlinux                 ⟹ reject
 .
 
 .
 vmlinux*
 !/vmlinux*
 .
-arch/foo/kernel/vmlinux.lds.S ⟹ reject
-foo/kernel/vmlinux.lds.S ⟹ reject
-kernel/vmlinux.lds.S ⟹ reject
-vmlinux.lds.S ⟹ accept
+arch/foo/kernel/vmlinux.lds.S           ⟹ reject
+foo/kernel/vmlinux.lds.S                ⟹ reject
+kernel/vmlinux.lds.S                    ⟹ reject
+vmlinux.lds.S                           ⟹ accept & inspects
 
-arch/foo/kernel/vmlinux ⟹ reject
-foo/kernel/vmlinux ⟹ reject
-kernel/vmlinux ⟹ reject
-vmlinux ⟹ accept
+arch/foo/kernel/vmlinux                 ⟹ reject
+foo/kernel/vmlinux                      ⟹ reject
+kernel/vmlinux                          ⟹ reject
+vmlinux                                 ⟹ accept & inspects
 .
 
 Example to exclude everything except a specific directory `foo/bar` (note the `/*` - without the slash, the wildcard would also exclude everything within `foo/bar`):
@@ -613,23 +630,23 @@ Example to exclude everything except a specific directory `foo/bar` (note the `/
 /foo/*
 !/foo/bar
 .
-arch ⟹ reject
-/arch ⟹ reject
-arch/ ⟹ reject
-arch.bin ⟹ reject
+arch                                    ⟹ reject
+/arch                                   ⟹ reject
+arch/                                   ⟹ reject
+arch.bin                                ⟹ reject
 # all /foo paths have a / slash before the end, so they are rooted.
 # This means any non-root prefix won't fly:
-arch/foo ⟹ accept
-/foo/bin ⟹ reject
-foo/bin ⟹ reject
-/foo/bin/ ⟹ reject
-foo/bin/ ⟹ reject
-/foo/bin/ls ⟹ accept
-foo/bin/ls ⟹ accept
-arch/foo/bin ⟹ accept
-arch/foo/bar ⟹ accept
-foo/bar ⟹ accept
-foo ⟹ accept
+arch/foo                                ⟹ accept
+/foo/bin                                ⟹ reject
+foo/bin                                 ⟹ reject
+/foo/bin/                               ⟹ reject
+foo/bin/                                ⟹ reject
+/foo/bin/ls                             ⟹ accept
+foo/bin/ls                              ⟹ accept
+arch/foo/bin                            ⟹ accept
+arch/foo/bar                            ⟹ accept
+foo/bar                                 ⟹ accept & inspects
+foo                                     ⟹ accept & inspects
 .
 
 [](#_see_also)SEE ALSO

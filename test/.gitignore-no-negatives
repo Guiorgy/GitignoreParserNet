@@ -1,1 +1,20 @@
-node_modules
+# This is a comment in a .gitignore file!
+/node_modules
+*.log
+
+# Ignore this nonexistent file
+/nonexistent
+
+# Ignore some files
+
+/baz
+
+/foo/*.wat
+
+# Ignore some deep sub folders
+/othernonexistent/**/what
+
+# Ignore deep folders with more than one wildcard
+*/**/__MACOSX/**/*
+
+*.swp
