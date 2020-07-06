@@ -222,19 +222,114 @@ a/#file ⟹ reject
 .
     
 *   Trailing spaces are ignored unless they are quoted with backslash ("`\`").
-    
+
 *   An optional prefix "`!`" which negates the pattern; any matching file excluded by a previous pattern will become included again. It is not possible to re-include a file if a parent directory of that file is excluded. Git doesn’t list excluded directories for performance reasons, so any patterns on contained files have no effect, no matter where they are defined. Put a backslash ("`\`") in front of the first "`!`" for patterns that begin with a literal "`!`", for example, "`\!important!.txt`".
+
+.
+\!important!.txt
+!important!.txt
+!file
+.
+important!.txt ⟹ accept
+!important!.txt ⟹ reject
+file ⟹ accept
+!file ⟹ accept
+.
     
 *   The slash _/_ is used as the directory separator. Separators may occur at the beginning, middle or end of the `.gitignore` search pattern.
     
 *   If there is a separator at the beginning or middle (or both) of the pattern, then the pattern is relative to the directory level of the particular `.gitignore` file itself. Otherwise the pattern may also match at any level below the `.gitignore` level.
+
+.
+/a
+b/c
+d/
+/e/
+f/g/
+.
+a ⟹ reject
+a/ ⟹ reject
+/a ⟹ reject
+/a/ ⟹ reject
+rel/a ⟹ accept
+rel/a/ ⟹ accept
+b/c ⟹ reject
+b/c/ ⟹ reject
+/b/c ⟹ reject
+/b/c/ ⟹ reject
+rel/b/c ⟹ accept
+rel/b/c/ ⟹ accept
+d ⟹ accept
+d/ ⟹ reject
+/d ⟹ accept
+/d/ ⟹ reject
+rel/d ⟹ accept
+rel/d/ ⟹ reject
+e ⟹ accept
+e/ ⟹ reject
+/e ⟹ accept
+/e/ ⟹ reject
+rel/e ⟹ accept
+rel/e/ ⟹ accept
+f/g ⟹ accept
+f/g/ ⟹ reject
+/f/g ⟹ accept
+/f/g/ ⟹ reject
+rel/f/g ⟹ accept
+rel/f/g/ ⟹ accept
+.
     
 *   If there is a separator at the end of the pattern then the pattern will only match directories, otherwise the pattern can match both files and directories.
     
 *   For example, a pattern `doc/frotz/` matches `doc/frotz` directory, but not `a/doc/frotz` directory; however `frotz/` matches `frotz` and `a/frotz` that is a directory (all paths are relative from the `.gitignore` file).
+
+.
+doc/frotz/
+.
+a/doc/frotz/ ⟹ accept
+doc/frotz/ ⟹ reject
+.
+
+.
+frotz/
+.
+frotz/ ⟹ reject
+a/frotz/ ⟹ reject
+.
     
 *   An asterisk "`*`" matches anything except a slash. The character "`?`" matches any one character except "`/`". The range notation, e.g. `[a-zA-Z]`, can be used to match one of the characters in a range. See fnmatch(3) and the FNM\_PATHNAME flag for a more detailed description.
-    
+
+.
+fro*
+.
+fr ⟹ accept
+fro ⟹ reject
+frot ⟹ reject
+frotz ⟹ reject
+frotz/didi ⟹ reject
+digi/frotz/mau ⟹ reject 
+.
+
+.
+fro?
+.
+fr ⟹ accept
+fro ⟹ accept
+frot ⟹ reject
+frotz ⟹ accept
+frotz/didi ⟹ accept
+digi/frotz/mau ⟹ accept 
+.
+
+.
+fro[q-z]
+.
+fr ⟹ accept
+fro ⟹ accept
+frot ⟹ reject
+frotz ⟹ accept
+frop ⟹ accept
+.
 
 Two consecutive asterisks ("`**`") in patterns matched against full pathname may have special meaning:
 
@@ -243,6 +338,67 @@ Two consecutive asterisks ("`**`") in patterns matched against full pathname may
 *   A trailing "`/**`" matches everything inside. For example, "`abc/**`" matches all files inside directory "`abc`", relative to the location of the `.gitignore` file, with infinite depth.
     
 *   A slash followed by two consecutive asterisks then a slash matches zero or more directories. For example, "`a/**/b`" matches "`a/b`", "`a/x/b`", "`a/x/y/b`" and so on.
+
+.
+**/foo
+.
+foo ⟹ reject
+bar ⟹ accept
+a/foo ⟹ reject
+a/food ⟹ accept
+a/foo/b ⟹ reject
+a/foo-fi/b ⟹ accept
+a/b/c/d/foo/e ⟹ reject
+.
+    
+.
+foo
+.
+foo ⟹ reject
+bar ⟹ accept
+a/foo ⟹ reject
+a/food ⟹ accept
+a/foo/b ⟹ reject
+a/foo-fi/b ⟹ accept
+a/b/c/d/foo/e ⟹ reject
+.
+
+.
+**/foo/bar
+.
+foo/bar ⟹ reject
+foo ⟹ accept
+bar ⟹ accept
+a/foo/bar ⟹ reject
+a/foo/barred ⟹ accept
+a/foo/bar/b ⟹ reject
+a/foo/barfly/b ⟹ accept
+a/b/c/d/foo/bar/e ⟹ reject
+.
+
+.
+foo/**
+.
+foo ⟹ reject
+bar ⟹ accept
+a/foo ⟹ accept
+a/food ⟹ accept
+foo/a ⟹ reject
+foo-fi/a ⟹ accept
+foo/a/b/c/d ⟹ reject
+.
+
+.
+foo/**/bar
+.
+foo/bar ⟹ reject
+foo ⟹ accept
+bar ⟹ accept
+foo/b/bar ⟹ reject
+a/foo/b/bar ⟹ accept
+foo/a/b/bar ⟹ reject
+c/foo/a/b/bar ⟹ accept
+.
     
 *   Other consecutive asterisks are considered regular asterisks and will match according to the previous rules.
     
@@ -263,13 +419,41 @@ To stop tracking a file that is currently tracked, use _git rm --cached_.
 ----------------------
 
 *   The pattern `hello.*` matches any file or folder whose name begins with `hello`. If one wants to restrict this only to the directory and not in its subdirectories, one can prepend the pattern with a slash, i.e. `/hello.*`; the pattern now matches `hello.txt`, `hello.c` but not `a/hello.java`.
+
+.
+hello.*
+.
+hello ⟹ reject
+hello.txt ⟹ reject
+hello.c ⟹ reject
+a/hello.java ⟹ reject
+hello-baby ⟹ accept
+.
     
 *   The pattern `foo/` will match a directory `foo` and paths underneath it, but will not match a regular file or a symbolic link `foo` (this is consistent with the way how pathspec works in general in Git)
+
+.
+foo/
+.
+foo/ ⟹ reject
+foo ⟹ accept
+a/foo/ ⟹ reject
+a/b/foo/ ⟹ reject
+a/foo ⟹ accept
+.
     
 *   The pattern `doc/frotz` and `/doc/frotz` have the same effect in any `.gitignore` file. In other words, a leading slash is not relevant if there is already a middle slash in the pattern.
     
 *   The pattern "foo/\*", matches "foo/test.json" (a regular file), "foo/bar" (a directory), but it does not match "foo/bar/hello.c" (a regular file), as the asterisk in the pattern does not match "bar/hello.c" which has a slash in it.
-    
+
+.
+foo/*
+.
+foo/test.json ⟹ reject
+foo/bar ⟹ reject
+foo/bar/ ⟹ reject
+foo/bar/hello.c ⟹ accept
+.
 
     $ git status
     \[...\]
@@ -296,6 +480,21 @@ To stop tracking a file that is currently tracked, use _git rm --cached_.
     #       Documentation/foo.html
     \[...\]
 
+.
+# ignore objects and archives, anywhere in the tree.
+*.[oa]
+# ignore generated html files,
+*.html
+# except foo.html which is maintained by hand
+!foo.html
+.
+Documentation/foo.html ⟹ accept
+Documentation/gitignore.html ⟹ reject
+file.o ⟹ reject
+lib.a ⟹ reject
+src/internal.o ⟹ reject
+.
+
 Another example:
 
     $ cat .gitignore
@@ -306,6 +505,22 @@ Another example:
 
 The second .gitignore prevents Git from ignoring `arch/foo/kernel/vmlinux.lds.S`.
 
+.
+vmlinux*
+.
+arch/foo/kernel/vmlinux.lds.S ⟹ reject
+.
+
+.
+vmlinux*
+!/vmlinux*
+.
+arch/foo/kernel/vmlinux.lds.S ⟹ reject
+foo/kernel/vmlinux.lds.S ⟹ reject
+kernel/vmlinux.lds.S ⟹ reject
+vmlinux.lds.S ⟹ accept
+.
+
 Example to exclude everything except a specific directory `foo/bar` (note the `/*` - without the slash, the wildcard would also exclude everything within `foo/bar`):
 
     $ cat .gitignore
@@ -314,6 +529,23 @@ Example to exclude everything except a specific directory `foo/bar` (note the `/
     !/foo
     /foo/\*
     !/foo/bar
+
+.
+# exclude everything except directory foo/bar
+/*
+!/foo
+/foo/*
+!/foo/bar
+.
+arch ⟹ reject
+arch.bin ⟹ reject
+arch/foo ⟹ accept
+arch/foo/bin ⟹ reject
+arch/foo/bar ⟹ reject
+foo/bar ⟹ accept
+foo ⟹ accept
+foo/bin ⟹ reject
+.
 
 [](#_see_also)SEE ALSO
 ----------------------
