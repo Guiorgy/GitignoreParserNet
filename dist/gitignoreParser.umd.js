@@ -1,4 +1,4 @@
-/*! gitignore-parser 0.2.0-6 https://github.com//GerHobbelt/gitignore-parser @license Apache License, Version 2.0 */
+/*! gitignore-parser 0.2.0-7 https://github.com//GerHobbelt/gitignore-parser @license Apache License, Version 2.0 */
 
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
