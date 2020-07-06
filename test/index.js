@@ -317,6 +317,20 @@ describe('gitignore parser', function () {
       });
     });
 
+    describe('issue #11', function () {
+      it('should not fail test A', function () {
+        let gitignore = LIB.compile('foo.txt');
+        gitignoreDenies(gitignore, 'foo.txt', true);
+        gitignoreAccepts(gitignore, 'foo.txt', false);
+      });
+
+      it('should not fail test B', function () {
+        let gitignore = LIB.compile('foo.txt');
+        gitignoreDenies(gitignore, 'a/foo.txt', true);
+        gitignoreAccepts(gitignore, 'a/foo.txt', false);
+      });
+    });
+
     describe('issue #12', function () {
       it('should not fail test A', function () {
         let gitignore = LIB.compile('/ajax/libs/bPopup/*b*');
