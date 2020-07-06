@@ -305,11 +305,17 @@ fro*
 fr ⟹ accept
 fro ⟹ reject
 frot ⟹ reject
-frot/blub ⟹ reject
+frot/ ⟹ reject
+frot/blub ⟹ accept
 frotz ⟹ reject
-frotz/didi ⟹ reject
+frotz/ ⟹ reject
+frotz/didi ⟹ accept
 digi/frotz ⟹ reject
-digi/frotz/mau ⟹ reject
+digi/frotz/ ⟹ reject
+digi/frotz/mau ⟹ accept
+r/frot ⟹ reject
+r/frot/ ⟹ reject
+r/frot/mau ⟹ accept
 .
 
 .
@@ -318,10 +324,16 @@ fro?
 fr ⟹ accept
 fro ⟹ accept
 frot ⟹ reject
-frot/blub ⟹ reject
+frot/ ⟹ reject
+frot/blub ⟹ accept
 frotz ⟹ accept
+frotz/ ⟹ accept
 frotz/didi ⟹ accept
+digi/frotz/ ⟹ accept
 digi/frotz/mau ⟹ accept
+r/frot ⟹ reject
+r/frot/ ⟹ reject
+r/frot/mau ⟹ accept
 .
 
 .
@@ -330,9 +342,14 @@ fro[q-z]
 fr ⟹ accept
 fro ⟹ accept
 frot ⟹ reject
-frot/blub ⟹ reject
+frot/ ⟹ reject
+frot/blub ⟹ accept
 frotz ⟹ accept
+frotz/ ⟹ accept
 frotz/blub ⟹ accept
+r/frot ⟹ reject
+r/frot/ ⟹ reject
+r/frot/mau ⟹ accept
 frop ⟹ accept
 .
 
@@ -351,11 +368,12 @@ foo ⟹ reject
 bar ⟹ accept
 a/foo ⟹ reject
 a/food ⟹ accept
-a/foo/b ⟹ reject
+a/foo/ ⟹ reject
+a/foo/b ⟹ accept
 a/foo-fi/b ⟹ accept
 a/b/c/d/foo ⟹ reject
 a/b/c/d/foo/ ⟹ reject
-a/b/c/d/foo/e ⟹ reject
+a/b/c/d/foo/e ⟹ accept
 .
 
 .
@@ -365,11 +383,12 @@ foo ⟹ reject
 bar ⟹ accept
 a/foo ⟹ reject
 a/food ⟹ accept
-a/foo/b ⟹ reject
+a/foo/ ⟹ reject
+a/foo/b ⟹ accept
 a/foo-fi/b ⟹ accept
 a/b/c/d/foo ⟹ reject
 a/b/c/d/foot ⟹ accept
-a/b/c/d/foo/e ⟹ reject
+a/b/c/d/foo/e ⟹ accept
 .
 
 .
@@ -380,10 +399,12 @@ foo ⟹ accept
 bar ⟹ accept
 a/foo/bar ⟹ reject
 a/foo/barred ⟹ accept
-a/foo/bar/b ⟹ reject
+a/foo/bar/ ⟹ reject
+a/foo/bar/b ⟹ accept
 a/foo/barfly/b ⟹ accept
 a/b/c/d/foo/bar ⟹ reject
-a/b/c/d/foo/bar/e ⟹ reject
+a/b/c/d/foo/bar/ ⟹ reject
+a/b/c/d/foo/bar/e ⟹ accept
 .
 
 .
@@ -407,6 +428,8 @@ bar ⟹ accept
 foo/b/bar ⟹ reject
 a/foo/b/bar ⟹ accept
 foo/a/b/bar ⟹ reject
+foo/a/b/bar/ ⟹ reject
+foo/a/b/bar/c ⟹ accept
 c/foo/a/b/bar ⟹ accept
 .
 
@@ -463,10 +486,7 @@ foo/*
 foo/test.json ⟹ reject
 foo/bar ⟹ reject
 foo/bar/ ⟹ reject
-# the pattern may not match the next one directly, but another match rule kicks in:
-# the pattern *does* match foor/bar/ which is a directory, and consequently all files
-# inside that directory are matched as well!
-foo/bar/hello.c ⟹ REJECT
+foo/bar/hello.c ⟹ accept
 .
 
     $ git status
@@ -555,9 +575,9 @@ arch ⟹ reject
 /arch ⟹ reject
 arch/ ⟹ reject
 arch.bin ⟹ reject
-# the next one is matched via /* matching arch/ and the rule about matching a directory
-# is to match everything within...
-arch/foo ⟹ REJECT
+# all /foo paths have a / slash before the end, so they are rooted.
+# This means any non-root prefix won't fly:
+arch/foo ⟹ accept
 /foo/bin ⟹ reject
 foo/bin ⟹ reject
 arch/foo/bin ⟹ accept
