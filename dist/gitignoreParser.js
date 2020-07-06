@@ -1,4 +1,4 @@
-/*! gitignore-parser 0.1.0-4 https://github.com//GerHobbelt/gitignore-parser @license Apache License, Version 2.0 */
+/*! gitignore-parser 0.1.1-4 https://github.com//GerHobbelt/gitignore-parser @license Apache License, Version 2.0 */
 
 'use strict';
 
