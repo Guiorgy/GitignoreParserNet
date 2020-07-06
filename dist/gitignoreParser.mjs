@@ -1,4 +1,4 @@
-/*! gitignore-parser 0.1.1-5 https://github.com//GerHobbelt/gitignore-parser @license Apache License, Version 2.0 */
+/*! gitignore-parser 0.2.0-5 https://github.com//GerHobbelt/gitignore-parser @license Apache License, Version 2.0 */
 
 // force to false and smart code compressors can remove the resulting 'dead code':
 /**
@@ -21,6 +21,9 @@ function compile(content) {
     /// the developer analyze what is going on inside: some gitignore spec
     /// bits are non-intuitive / non-trivial, after all.
     diagnose: function (query) {
+      {
+        console.log(`${query.query}:`, query);
+      }
     },
     /// Return TRUE when the given `input` path PASSES the gitignore filters,
     /// i.e. when the given input path is DENIED.
@@ -33,11 +36,47 @@ function compile(content) {
     accepts: function (input, expected) {
       if (input[0] === '/') input = input.slice(1);
       input = '/' + input;
-      let acceptRe = negatives;
+      let acceptRe = negatives[0];
       let acceptTest = acceptRe.test(input);
-      let denyRe = positives;
+      let denyRe = positives[0];
       let denyTest = denyRe.test(input);
-      let returnVal = acceptTest || !denyTest;
+      let returnVal = acceptTest || !denyTest; // See the test/fixtures/gitignore.manpage.txt near line 680 (grep for "uber-nasty"):
+      // to resolve chained rules which reject, then accept, we need to establish
+      // the precedence of both accept and reject parts of the compiled gitignore by
+      // comparing match lengths.
+      // Since the generated consolidated regexes are lazy, we must loop through all lines' regexes instead:
+
+      let acceptMatch, denyMatch;
+
+      if (acceptTest && denyTest) {
+        for (let re of negatives[1]) {
+          let m = re.exec(input);
+
+          if (m) {
+            if (!acceptMatch) {
+              acceptMatch = m;
+            } else if (acceptMatch[0].length < m[0].length) {
+              acceptMatch = m;
+            }
+          }
+        }
+
+        for (let re of positives[1]) {
+          let m = re.exec(input);
+
+          if (m) {
+            if (!denyMatch) {
+              denyMatch = m;
+            } else if (denyMatch[0].length < m[0].length) {
+              denyMatch = m;
+            }
+          }
+        } // acceptMatch = acceptRe.exec(input);
+        // denyMatch = denyRe.exec(input);
+
+
+        returnVal = acceptMatch[0].length >= denyMatch[0].length;
+      }
 
       if (expected != null && expected !== returnVal) {
         this.diagnose({
@@ -46,8 +85,10 @@ function compile(content) {
           expected,
           acceptRe,
           acceptTest,
+          acceptMatch,
           denyRe,
           denyTest,
+          denyMatch,
           combine: '(Accept || !Deny)',
           returnVal
         });
@@ -66,9 +107,9 @@ function compile(content) {
     denies: function (input, expected) {
       if (input[0] === '/') input = input.slice(1);
       input = '/' + input;
-      let acceptRe = negatives;
+      let acceptRe = negatives[0];
       let acceptTest = acceptRe.test(input);
-      let denyRe = positives;
+      let denyRe = positives[0];
       let denyTest = denyRe.test(input); // boolean logic:
       //
       // denies = !accepts =>
@@ -76,7 +117,45 @@ function compile(content) {
       // = (!Accept && !!Deny) =>
       // = (!Accept && Deny)
 
-      let returnVal = !acceptTest && denyTest;
+      let returnVal = !acceptTest && denyTest; // See the test/fixtures/gitignore.manpage.txt near line 680 (grep for "uber-nasty"):
+      // to resolve chained rules which reject, then accept, we need to establish
+      // the precedence of both accept and reject parts of the compiled gitignore by
+      // comparing match lengths.
+      // Since the generated regexes are all set up to be GREEDY, we can use the
+      // consolidated regex for this, instead of having to loop through all lines' regexes:
+
+      let acceptMatch, denyMatch;
+
+      if (acceptTest && denyTest) {
+        for (let re of negatives[1]) {
+          let m = re.exec(input);
+
+          if (m) {
+            if (!acceptMatch) {
+              acceptMatch = m;
+            } else if (acceptMatch[0].length < m[0].length) {
+              acceptMatch = m;
+            }
+          }
+        }
+
+        for (let re of positives[1]) {
+          let m = re.exec(input);
+
+          if (m) {
+            if (!denyMatch) {
+              denyMatch = m;
+            } else if (denyMatch[0].length < m[0].length) {
+              denyMatch = m;
+            }
+          }
+        } // acceptMatch = acceptRe.exec(input);
+        // denyMatch = denyRe.exec(input);
+        // boolean logic: !(A>=B) ==> A<B
+
+
+        returnVal = acceptMatch[0].length < denyMatch[0].length;
+      }
 
       if (expected != null && expected !== returnVal) {
         this.diagnose({
@@ -85,8 +164,10 @@ function compile(content) {
           expected,
           acceptRe,
           acceptTest,
+          acceptMatch,
           denyRe,
           denyTest,
+          denyMatch,
           combine: '(!Accept && Deny)',
           returnVal
         });
@@ -110,9 +191,9 @@ function compile(content) {
     inspects: function (input, expected) {
       if (input[0] === '/') input = input.slice(1);
       input = '/' + input;
-      let acceptRe = negatives;
+      let acceptRe = negatives[0];
       let acceptTest = acceptRe.test(input);
-      let denyRe = positives;
+      let denyRe = positives[0];
       let denyTest = denyRe.test(input); // when any filter 'touches' the input path, it must match,
       // no matter whether it's a deny or accept filter line:
 
@@ -172,15 +253,31 @@ function parse(content) {
     // those are generally faster than their submatch-capturing brothers:
 
     if (list.length > 0) {
-      return new RegExp('(?:' + list.join(')|(?:') + ')');
+      return [new RegExp('(?:' + list.join(')|(?:') + ')'), list.map(re => new RegExp(re))];
     } // this regex *won't match a thing*:
 
 
-    return new RegExp('$^');
+    return [new RegExp('$^'), []];
   });
 }
 
 function prepareRegexPattern(pattern) {
+  // https://git-scm.com/docs/gitignore#_pattern_format
+  //
+  // * ...
+  //
+  // * If there is a separator at the beginning or middle (or both) of the pattern,
+  //   then the pattern is relative to the directory level of the particular
+  //   .gitignore file itself.
+  //   Otherwise the pattern may also match at any level below the .gitignore level.
+  //
+  // * ...
+  //
+  // * For example, a pattern `doc/frotz/` matches `doc/frotz` directory, but
+  //   not `a/doc/frotz` directory; however `frotz/` matches `frotz` and `a/frotz`
+  //   that is a directory (all paths are relative from the .gitignore file).
+  //
+  let input = pattern;
   let re = '';
   let rooted = false;
   let directory = false;
@@ -242,20 +339,42 @@ function prepareRegexPattern(pattern) {
 
 
   if (directory) {
-    re += '\\/$';
+    // match the directory itself and anything within:
+    re += '\\/';
   } else {
-    re += '\\/?$';
+    // match the file itself, or, when it is a directory, match the directory and anything within:
+    re += '(?:$|\\/)';
   } // regex validation diagnostics: better to check if the part is valid
+  // then to discover it's gone haywire in the big conglomerate at the end.
+
+
+  {
+    try {
+      /* eslint no-new:1 */
+      new RegExp('(?:' + re + ')');
+    } catch (ex) {
+      console.log('failed regex:', {
+        input,
+        re,
+        ex
+      });
+    }
+  }
 
   return re;
-}
 
-function transpileRegexPart(re) {
-  return re // unescape for these will be escaped again in the subsequent `.replace(...)`,
-  // whether they were escaped before or not:
-  .replace(/\\(.)/g, '$1') // escape special regex characters:
-  .replace(/[\-\[\]\{\}\(\)\+\.\\\^\$\|]/g, '\\$&').replace(/\?/g, '[^/]').replace(/\/\*\*\//g, '(?:/|(?:/.+/))').replace(/^\*\*\//g, '(?:|(?:.+/))').replace(/\/\*\*$/g, '(?:|(?:/.+))') // `a/**` also accepts `a/` itself
-  .replace(/\*\*/g, '.*').replace(/\*/g, '[^/]*').replace(/\//g, '\\/');
+  function transpileRegexPart(re) {
+    return re // unescape for these will be escaped again in the subsequent `.replace(...)`,
+    // whether they were escaped before or not:
+    .replace(/\\(.)/g, '$1') // escape special regex characters:
+    .replace(/[\-\[\]\{\}\(\)\+\.\\\^\$\|]/g, '\\$&').replace(/\?/g, '[^/]').replace(/\/\*\*\//g, '(?:/|(?:/.+/))').replace(/^\*\*\//g, '(?:|(?:.+/))').replace(/\/\*\*$/g, () => {
+      directory = true; // `a/**` should match `a/`, `a/b/` and `a/b`, the latter by implication of matching directory `a/`
+
+      return '(?:|(?:/.+))'; // `a/**` also accepts `a/` itself
+    }).replace(/\*\*/g, '.*') // `a/*` should match `a/b` and `a/b/` but NOT `a` or `a/`
+    // meanwhile, `a/*/` should match `a/b/` and `a/b/c` but NOT `a` or `a/` or `a/b`
+    .replace(/\/\*(\/|$)/g, '/[^/]+$1').replace(/\*/g, '[^/]*').replace(/\//g, '\\/');
+  }
 }
 
 export { compile, parse };

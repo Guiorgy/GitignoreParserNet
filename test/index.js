@@ -21,8 +21,16 @@ describe('gitignore parser', function () {
     it('should accept ** wildcards', function () {
       let parsed = LIB.parse('a/**/b');
       assert.deepEqual(parsed, [
-        /(?:^\/a(?:\/|(?:\/.+\/))b\/?$)/,
-        /$^/
+        [
+          /(?:^\/a(?:\/|(?:\/.+\/))b(?:$|\/))/,
+          [
+            /^\/a(?:\/|(?:\/.+\/))b(?:$|\/)/
+          ]
+        ],
+        [
+          /$^/,
+          []
+        ]
       ]
       );
     });
@@ -30,8 +38,16 @@ describe('gitignore parser', function () {
     it('should accept * wildcards', function () {
       let parsed = LIB.parse('a/b*c');
       assert.deepEqual(parsed, [
-        /(?:^\/a\/b[^\/]*c\/?$)/,
-        /$^/
+        [
+          /(?:^\/a\/b[^\/]*c(?:$|\/))/,
+          [
+            /^\/a\/b[^\/]*c(?:$|\/)/
+          ]
+        ],
+        [
+          /$^/,
+          []
+        ]
       ]
       );
     });
@@ -39,8 +55,16 @@ describe('gitignore parser', function () {
     it('should accept ? wildcards', function () {
       let parsed = LIB.parse('a/b?');
       assert.deepEqual(parsed, [
-        /(?:^\/a\/b[^\/]\/?$)/,
-        /$^/
+        [
+          /(?:^\/a\/b[^\/](?:$|\/))/,
+          [
+            /^\/a\/b[^\/](?:$|\/)/
+          ]
+        ],
+        [
+          /$^/,
+          []
+        ]
       ]
       );
     });
@@ -48,8 +72,16 @@ describe('gitignore parser', function () {
     it('should correctly encode literals', function () {
       let parsed = LIB.parse('a/b.c[d](e){f}\\slash^_$+$$$');
       assert.deepEqual(parsed, [
-        /(?:^\/a\/b\.c[d]\(e\)\{f\}slash\^_\$\+\$\$\$\/?$)/,
-        /$^/
+        [
+          /(?:^\/a\/b\.c[d]\(e\)\{f\}slash\^_\$\+\$\$\$(?:$|\/))/,
+          [
+            /^\/a\/b\.c[d]\(e\)\{f\}slash\^_\$\+\$\$\$(?:$|\/)/
+          ]
+        ],
+        [
+          /$^/,
+          []
+        ]
       ]
       );
     });
@@ -57,8 +89,16 @@ describe('gitignore parser', function () {
     it('should correctly parse character ranges', function () {
       let parsed = LIB.parse('a[c-z$].[1-9-][\\[\\]A-Z]-\\[...]');
       assert.deepEqual(parsed, [
-        /(?:\/a[c-z$]\.[1-9-][\[\]A-Z]\-\[\.\.\.\]\/?$)/,
-        /$^/
+        [
+          /(?:\/a[c-z$]\.[1-9-][\[\]A-Z]\-\[\.\.\.\](?:$|\/))/,
+          [
+            /\/a[c-z$]\.[1-9-][\[\]A-Z]\-\[\.\.\.\](?:$|\/)/
+          ]
+        ],
+        [
+          /$^/,
+          []
+        ]
       ]
       );
     });
@@ -72,8 +112,17 @@ describe('gitignore parser', function () {
       // below the .gitignore level.
       let parsed = LIB.parse('/a\nb');
       assert.deepEqual(parsed, [
-        /(?:^\/a\/?$)|(?:\/b\/?$)/,
-        /$^/
+        [
+          /(?:^\/a(?:$|\/))|(?:\/b(?:$|\/))/,
+          [
+            /^\/a(?:$|\/)/,
+            /\/b(?:$|\/)/
+          ]
+        ],
+        [
+          /$^/,
+          []
+        ]
       ]
       );
     });
@@ -81,8 +130,19 @@ describe('gitignore parser', function () {
     it('should correctly transpile rooted and relative path specs', function () {
       let parsed = LIB.parse('a/b\n/c/d\ne/\nf');
       assert.deepEqual(parsed, [
-        /(?:^\/c\/d\/?$)|(?:^\/a\/b\/?$)|(?:\/e\/$)|(?:\/f\/?$)/,
-        /$^/
+        [
+          /(?:^\/c\/d(?:$|\/))|(?:^\/a\/b(?:$|\/))|(?:\/e\/)|(?:\/f(?:$|\/))/,
+          [
+            /^\/c\/d(?:$|\/)/,
+            /^\/a\/b(?:$|\/)/,
+            /\/e\//,
+            /\/f(?:$|\/)/
+          ]
+        ],
+        [
+          /$^/,
+          []
+        ]
       ]
       );
     });
@@ -123,12 +183,8 @@ describe('gitignore parser', function () {
     //
 
     beforeEach(function () {
-      // git has some implicit ignores:
-      const defaultIgnores = `
-        node_modules/**/*
-      `;
-      gitignore = LIB.compile(defaultIgnores + FIXTURE);
-      gitignoreNoNegatives = LIB.compile(defaultIgnores + NO_NEGATIVES_FIXTURE);
+      gitignore = LIB.compile(FIXTURE);
+      gitignoreNoNegatives = LIB.compile(NO_NEGATIVES_FIXTURE);
     });
 
     function gitignoreAccepts(str, expects) {
@@ -156,7 +212,7 @@ describe('gitignore parser', function () {
 
       it('should not accept the given directory', function () {
         gitignoreAccepts('nonexistent', false);
-        gitignoreAccepts('nonexistent/bar', true);     // TODO: expected false
+        gitignoreAccepts('nonexistent/bar', false);
         gitignoreNoNegativesAccepts('node_modules', false);
       });
 
@@ -195,7 +251,7 @@ describe('gitignore parser', function () {
 
       it('should deny the given directory', function () {
         gitignoreDenies('nonexistent', true);
-        gitignoreDenies('nonexistent/bar', false);     // TODO: expected true
+        gitignoreDenies('nonexistent/bar', true);
         gitignoreNoNegativesDenies('node_modules', true);
         gitignoreNoNegativesDenies('node_modules/foo', true);
       });
@@ -226,20 +282,20 @@ describe('gitignore parser', function () {
 
       it('should return true for directories explicitly mentioned by .gitignore', function () {
         gitignoreIsInspected('baz', true);
-        gitignoreIsInspected('baz/wat/foo', false);     // TODO: expected true
+        gitignoreIsInspected('baz/wat/foo', true);
         gitignoreNoNegativesIsInspected('node_modules', true);
       });
 
       it('should return true for ignored directories that have exceptions', function () {
         gitignoreIsInspected('nonexistent', true);
         gitignoreIsInspected('nonexistent/foo', true);
-        gitignoreIsInspected('nonexistent/foo/bar', false);     // TODO: expected true
+        gitignoreIsInspected('nonexistent/foo/bar', true);
       });
 
-      it('should return false for non exceptions of ignored subdirectories', function () {
-        gitignoreIsInspected('nonexistent/wat', false);
-        gitignoreIsInspected('nonexistent/wat/foo', false);
-        gitignoreNoNegativesIsInspected('node_modules/wat/foo', true); // <-- via defaultIgnores      // TODO: expected false and no need for defaultIgnores
+      it('should return true for non exceptions of ignored subdirectories', function () {
+        gitignoreIsInspected('nonexistent/wat', true);
+        gitignoreIsInspected('nonexistent/wat/foo', true);
+        gitignoreNoNegativesIsInspected('node_modules/wat/foo', true);
       });
     });
   });

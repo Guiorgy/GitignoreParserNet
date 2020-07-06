@@ -306,16 +306,16 @@ fr                                      ⟹ accept
 fro                                     ⟹ reject
 frot                                    ⟹ reject
 frot/                                   ⟹ reject
-frot/blub                               ⟹ accept
+frot/blub                               ⟹ reject (matches the frot directory and anything within) 
 frotz                                   ⟹ reject
 frotz/                                  ⟹ reject
-frotz/didi                              ⟹ accept
+frotz/didi                              ⟹ reject
 digi/frotz                              ⟹ reject
 digi/frotz/                             ⟹ reject
-digi/frotz/mau                          ⟹ accept
+digi/frotz/mau                          ⟹ reject
 r/frot                                  ⟹ reject
 r/frot/                                 ⟹ reject
-r/frot/mau                              ⟹ accept
+r/frot/mau                              ⟹ reject
 .
 
 .
@@ -325,7 +325,7 @@ fr                                      ⟹ accept
 fro                                     ⟹ accept
 frot                                    ⟹ reject
 frot/                                   ⟹ reject
-frot/blub                               ⟹ accept
+frot/blub                               ⟹ reject
 frotz                                   ⟹ accept
 frotz/                                  ⟹ accept
 frotz/didi                              ⟹ accept
@@ -333,7 +333,7 @@ digi/frotz/                             ⟹ accept
 digi/frotz/mau                          ⟹ accept
 r/frot                                  ⟹ reject
 r/frot/                                 ⟹ reject
-r/frot/mau                              ⟹ accept
+r/frot/mau                              ⟹ reject
 .
 
 .
@@ -343,13 +343,13 @@ fr                                      ⟹ accept
 fro                                     ⟹ accept
 frot                                    ⟹ reject
 frot/                                   ⟹ reject
-frot/blub                               ⟹ accept
+frot/blub                               ⟹ reject
 frotz                                   ⟹ accept
 frotz/                                  ⟹ accept
 frotz/blub                              ⟹ accept
 r/frot                                  ⟹ reject
 r/frot/                                 ⟹ reject
-r/frot/mau                              ⟹ accept
+r/frot/mau                              ⟹ reject
 frop                                    ⟹ accept
 .
 
@@ -369,11 +369,11 @@ bar                                     ⟹ accept
 a/foo                                   ⟹ reject
 a/food                                  ⟹ accept
 a/foo/                                  ⟹ reject
-a/foo/b                                 ⟹ accept
+a/foo/b                                 ⟹ reject
 a/foo-fi/b                              ⟹ accept
 a/b/c/d/foo                             ⟹ reject
 a/b/c/d/foo/                            ⟹ reject
-a/b/c/d/foo/e                           ⟹ accept
+a/b/c/d/foo/e                           ⟹ reject
 .
 
 .
@@ -384,11 +384,11 @@ bar                                     ⟹ accept
 a/foo                                   ⟹ reject
 a/food                                  ⟹ accept
 a/foo/                                  ⟹ reject
-a/foo/b                                 ⟹ accept
+a/foo/b                                 ⟹ reject
 a/foo-fi/b                              ⟹ accept
 a/b/c/d/foo                             ⟹ reject
 a/b/c/d/foot                            ⟹ accept
-a/b/c/d/foo/e                           ⟹ accept
+a/b/c/d/foo/e                           ⟹ reject
 .
 
 .
@@ -400,17 +400,18 @@ bar                                     ⟹ accept
 a/foo/bar                               ⟹ reject
 a/foo/barred                            ⟹ accept
 a/foo/bar/                              ⟹ reject
-a/foo/bar/b                             ⟹ accept
+a/foo/bar/b                             ⟹ reject
 a/foo/barfly/b                          ⟹ accept
 a/b/c/d/foo/bar                         ⟹ reject
 a/b/c/d/foo/bar/                        ⟹ reject
-a/b/c/d/foo/bar/e                       ⟹ accept
+a/b/c/d/foo/bar/e                       ⟹ reject
 .
 
 .
 foo/**
 .
-foo                                     ⟹ reject
+foo                                     ⟹ accept
+foo/                                    ⟹ reject
 bar                                     ⟹ accept
 a/foo                                   ⟹ accept
 a/food                                  ⟹ accept
@@ -429,7 +430,7 @@ foo/b/bar                               ⟹ reject
 a/foo/b/bar                             ⟹ accept
 foo/a/b/bar                             ⟹ reject
 foo/a/b/bar/                            ⟹ reject
-foo/a/b/bar/c                           ⟹ accept
+foo/a/b/bar/c                           ⟹ reject
 c/foo/a/b/bar                           ⟹ accept
 .
 
@@ -438,7 +439,9 @@ foo/**/*
 .
 foo/bar                                 ⟹ reject
 foo                                     ⟹ accept
+foo/                                    ⟹ reject
 bar                                     ⟹ accept
+bar/                                    ⟹ accept
 foo/b/bar                               ⟹ reject
 a/foo/b/bar                             ⟹ accept
 foo/a/b/bar                             ⟹ reject
@@ -447,6 +450,20 @@ foo/a/b/bar/c                           ⟹ reject
 c/foo/a/b/bar                           ⟹ accept
 .
 
+.
+foo/*
+.
+foo                                     ⟹ accept
+foo/                                    ⟹ accept
+bar                                     ⟹ accept
+a/foo                                   ⟹ accept
+a/food                                  ⟹ accept
+foo/a                                   ⟹ reject
+foo/a/                                  ⟹ reject
+foo-fi/a                                ⟹ accept
+foo/a/b                                 ⟹ reject (by matching the directory foo/a/ and thus by implication anything within)
+foo/a/b/c/d                             ⟹ reject (ditto)
+.
 
 *   Other consecutive asterisks are considered regular asterisks and will match according to the previous rules.
 
@@ -485,13 +502,13 @@ hello-baby                              ⟹ accept
 foo/
 .
 foo/                                    ⟹ reject
-foo/f                                   ⟹ accept
+foo/f                                   ⟹ reject (by matching foo/ and by implication anything within)
 foo                                     ⟹ accept
 a/foo                                   ⟹ accept
 a/foo/                                  ⟹ reject
-a/foo/f                                 ⟹ accept
+a/foo/f                                 ⟹ reject (by matching a/foo/ and by implication anything within)
 a/b/foo/                                ⟹ reject
-a/b/foo/f                               ⟹ accept
+a/b/foo/f                               ⟹ reject (by matching a/b/foo/ and by implication anything within)
 a/foo                                   ⟹ accept
 .
 
@@ -501,13 +518,13 @@ a/foo                                   ⟹ accept
 doc/frotz
 .
 doc/frotz/                              ⟹ reject
-doc/frotz/f                             ⟹ accept
+doc/frotz/f                             ⟹ reject (by matching doc/frotz/ and by implication anything within)
 doc/frotz                               ⟹ reject
 a/doc/frotz                             ⟹ accept
 a/doc/frotz/                            ⟹ accept
 
 /doc/frotz/                             ⟹ reject
-/doc/frotz/f                            ⟹ accept
+/doc/frotz/f                            ⟹ reject (by matching /doc/frotz/ and by implication anything within)
 /doc/frotz                              ⟹ reject
 /a/doc/frotz                            ⟹ accept
 /a/doc/frotz/                           ⟹ accept
@@ -517,13 +534,13 @@ a/doc/frotz/                            ⟹ accept
 /doc/frotz
 .
 doc/frotz/                              ⟹ reject
-doc/frotz/f                             ⟹ accept
+doc/frotz/f                             ⟹ reject (by matching doc/frotz/ and by implication anything within)
 doc/frotz                               ⟹ reject
 a/doc/frotz                             ⟹ accept
 a/doc/frotz/                            ⟹ accept
 
 /doc/frotz/                             ⟹ reject
-/doc/frotz/f                            ⟹ accept
+/doc/frotz/f                            ⟹ reject (by matching /doc/frotz/ and by implication anything within)
 /doc/frotz                              ⟹ reject
 /a/doc/frotz                            ⟹ accept
 /a/doc/frotz/                           ⟹ accept
@@ -537,7 +554,17 @@ foo/*
 foo/test.json                           ⟹ reject
 foo/bar                                 ⟹ reject
 foo/bar/                                ⟹ reject
-foo/bar/hello.c                         ⟹ accept
+
+# CONTRARY to what the text above implies about the next one being ACCEPTED,
+# testing with `git status -u` and a .gitignore file like this, shows that
+# /* does not somehow magickally annul the omnipresent rule: 
+#
+#   by implication of matching a directory, we match anything within!
+#
+# Hence the result is foo/bar/hello.c being REJECTED after all,
+# since foo/* matches foo/bar/ which is a directory and it all follows
+# from there:
+foo/bar/hello.c                         ⟹ REJECT
 .
 
     $ git status
@@ -634,17 +661,47 @@ arch                                    ⟹ reject
 /arch                                   ⟹ reject
 arch/                                   ⟹ reject
 arch.bin                                ⟹ reject
+
 # all /foo paths have a / slash before the end, so they are rooted.
-# This means any non-root prefix won't fly:
-arch/foo                                ⟹ accept
-/foo/bin                                ⟹ reject
-foo/bin                                 ⟹ reject
-/foo/bin/                               ⟹ reject
-foo/bin/                                ⟹ reject
-/foo/bin/ls                             ⟹ accept
-foo/bin/ls                              ⟹ accept
-arch/foo/bin                            ⟹ accept
-arch/foo/bar                            ⟹ accept
+# This means any non-root prefix won't fly... aber O-HO! There's
+# the /* rule above, which will take care of matching arch/ and
+# by implication anything within? But... does that make sense?
+# NO, /* at the end of a rule does NOT annul that implication 
+# and consequently it would imply that /* would match
+# arch/foo after all by matching arch/ which is a directory and hence
+# matching anything within. 
+#
+# See also further above at the bit about foo/bar/hello.c, where this
+# occurs for the first time in this document.
+#
+# Hence the conclusion: REJECTED.
+arch/foo                                ⟹ REJECT
+
+# the next couple are uber-nasty, as this requires precedence resolution
+# to get right: longest match wins and accept wins over reject when 
+# match lengths are the same.
+#
+# What happens with the next one: /foo/bin is ACCEPTED given the !/foo rule,
+# BUT there's /foo/* to reckon with: that one has the longer match and thus 
+# should REJECT all these 6 buggers below:
+/foo/bin                                ⟹ REJECT (via /foo/* longest match precedence)
+foo/bin                                 ⟹ REJECT (via /foo/* longest match precedence)
+/foo/bin/                               ⟹ REJECT (via /foo/* longest match precedence)
+foo/bin/                                ⟹ REJECT (via /foo/* longest match precedence)
+/foo/bin/ls                             ⟹ REJECT (via /foo/* longest match precedence)
+foo/bin/ls                              ⟹ REJECT (via /foo/* longest match precedence)
+
+# these 2 SHOULD be accepted because all foo rules are rooted,
+# while there's the /* rule to consider: that one cannot match the 3 levels 
+# in arch/foo/bin, only arch/ w3hicch, given the implication of 
+# "match a directory, match everything within" as discussed before: it's rather
+# odd that /* is effectively identical to /**/* but have another look at the
+# comments further above near the foo/bar/hello.c piece in this document, where
+# we encounter this oddness for the first time.
+# Conclusion: must REJECT.
+arch/foo/bin                            ⟹ REJECT
+arch/foo/bar                            ⟹ REJECT
+
 foo/bar                                 ⟹ accept & inspects
 foo                                     ⟹ accept & inspects
 .
@@ -659,3 +716,32 @@ foo                                     ⟹ accept & inspects
 
 Part of the [git\[1\]](/docs/git) suite
 
+
+.
+# additional test set(s) constructed to ensure 100% code coverage
+#
+# This one should have a accept/reject collision where _later_ rules
+# have *shorter-or-equal* matchees than the first rules (which is further impacted
+# by the rules being *sorted* as part of the compile process)
+/*
+!/foo
+/foo/*
+!/foo/bar
+!/foo/*
+/f*
+!/f*
+.
+# the next couple are uber-nasty, as this requires precedence resolution
+# to get right: longest match wins and accept wins over reject when 
+# match lengths are the same.
+#
+# What happens with the next one: /foo/bin is ACCEPTED given the !/foo rule,
+# BUT there's /foo/* to reckon with: that one has the longer match and thus 
+# should REJECT all these 6 buggers below:
+/foo/bin                                ⟹ ACCEPT (via /foo/* accept-has-longest-or-equal match precedence) & inspects
+foo/bin                                 ⟹ ACCEPT (via /foo/* accept-has-longest-or-equal match precedence) & inspects
+/foo/bin/                               ⟹ ACCEPT (via /foo/* accept-has-longest-or-equal match precedence) & inspects
+foo/bin/                                ⟹ ACCEPT (via /foo/* accept-has-longest-or-equal match precedence) & inspects
+/foo/bin/ls                             ⟹ ACCEPT (via /foo/* accept-has-longest-or-equal match precedence) & inspects
+foo/bin/ls                              ⟹ ACCEPT (via /foo/* accept-has-longest-or-equal match precedence) & inspects
+.
