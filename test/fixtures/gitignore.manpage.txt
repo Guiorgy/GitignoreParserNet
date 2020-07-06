@@ -470,13 +470,49 @@ hello-baby ⟹ accept
 foo/
 .
 foo/ ⟹ reject
+foo/f ⟹ accept
 foo ⟹ accept
+a/foo ⟹ accept
 a/foo/ ⟹ reject
+a/foo/f ⟹ accept
 a/b/foo/ ⟹ reject
+a/b/foo/f ⟹ accept
 a/foo ⟹ accept
 .
 
 *   The pattern `doc/frotz` and `/doc/frotz` have the same effect in any `.gitignore` file. In other words, a leading slash is not relevant if there is already a middle slash in the pattern.
+
+.
+doc/frotz
+.
+doc/frotz/ ⟹ reject
+doc/frotz/f ⟹ accept
+doc/frotz ⟹ reject
+a/doc/frotz ⟹ accept
+a/doc/frotz/ ⟹ accept
+
+/doc/frotz/ ⟹ reject
+/doc/frotz/f ⟹ accept
+/doc/frotz ⟹ reject
+/a/doc/frotz ⟹ accept
+/a/doc/frotz/ ⟹ accept
+.
+
+.
+/doc/frotz
+.
+doc/frotz/ ⟹ reject
+doc/frotz/f ⟹ accept
+doc/frotz ⟹ reject
+a/doc/frotz ⟹ accept
+a/doc/frotz/ ⟹ accept
+
+/doc/frotz/ ⟹ reject
+/doc/frotz/f ⟹ accept
+/doc/frotz ⟹ reject
+/a/doc/frotz ⟹ accept
+/a/doc/frotz/ ⟹ accept
+.
 
 *   The pattern "foo/\*", matches "foo/test.json" (a regular file), "foo/bar" (a directory), but it does not match "foo/bar/hello.c" (a regular file), as the asterisk in the pattern does not match "bar/hello.c" which has a slash in it.
 
@@ -543,6 +579,7 @@ The second .gitignore prevents Git from ignoring `arch/foo/kernel/vmlinux.lds.S`
 vmlinux*
 .
 arch/foo/kernel/vmlinux.lds.S ⟹ reject
+arch/foo/kernel/vmlinux ⟹ reject
 .
 
 .
@@ -553,6 +590,11 @@ arch/foo/kernel/vmlinux.lds.S ⟹ reject
 foo/kernel/vmlinux.lds.S ⟹ reject
 kernel/vmlinux.lds.S ⟹ reject
 vmlinux.lds.S ⟹ accept
+
+arch/foo/kernel/vmlinux ⟹ reject
+foo/kernel/vmlinux ⟹ reject
+kernel/vmlinux ⟹ reject
+vmlinux ⟹ accept
 .
 
 Example to exclude everything except a specific directory `foo/bar` (note the `/*` - without the slash, the wildcard would also exclude everything within `foo/bar`):
@@ -580,11 +622,14 @@ arch.bin ⟹ reject
 arch/foo ⟹ accept
 /foo/bin ⟹ reject
 foo/bin ⟹ reject
+/foo/bin/ ⟹ reject
+foo/bin/ ⟹ reject
+/foo/bin/ls ⟹ accept
+foo/bin/ls ⟹ accept
 arch/foo/bin ⟹ accept
 arch/foo/bar ⟹ accept
 foo/bar ⟹ accept
 foo ⟹ accept
-foo/bin ⟹ reject
 .
 
 [](#_see_also)SEE ALSO
