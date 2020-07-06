@@ -8,27 +8,42 @@
     ".gitignore",
     "git ignore"
   ],
-  "main": "./lib/index.js",
-  "devDependencies": {
-    "@gerhobbelt/markdown-it-testgen": "0.1.6-15",
-    "mocha": "8.0.1"
-  },
-  "repository": "codemix/gitignore-parser",
-  "directories": {
-    "lib": "./lib"
-  },
-  "engines": {
-    "node": ">=10"
-  },
-  "scripts": {
-    "build": "npm test",
-    "test": "mocha",
-    "watch": "mocha --watch",
-    "pub": "npm publish --access public"
-  },
   "author": {
     "name": "Charles Pick",
     "email": "charles@codemix.com"
   },
-  "license": "Apache License, Version 2.0"
+  "repository": "codemix/gitignore-parser",
+  "license": "Apache License, Version 2.0",
+  "source": "./lib/index.js",
+  "main": "dist/gitignoreParser.js",
+  "module": "dist/gitignoreParser.mjs",
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "build": "make",
+    "test": "make test",
+    "todo": "make todo",
+    "clean": "make clean",
+    "superclean": "make superclean",
+    "doc": "make doc",
+    "lint": "make lint",
+    "lintfix": "make lintfix",
+    "cov": "make report-coverage",
+    "pub": "npm publish --access public"
+  },
+  "devDependencies": {
+    "@gerhobbelt/markdown-it-testgen": "0.1.6-15",
+    "@gerhobbelt/prepend-header": "1.0.8-3",
+    "cross-env": "7.0.2",
+    "eslint": "7.4.0",
+    "microbundle": "0.12.2",
+    "mocha": "8.0.1",
+    "nyc": "15.1.0"
+  },
+  "reporter": [
+    "lcov",
+    "text",
+    "text-summary"
+  ]
 }

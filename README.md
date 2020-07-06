@@ -1,13 +1,15 @@
-# Gitignore Parser
+# [Gitignore](https://git-scm.com/docs/gitignore#_pattern_format) Parser
 
-A very simple `.gitignore` parser for node.js.
+A very simple [`.gitignore`](https://git-scm.com/docs/gitignore#_pattern_format) parser for node.js.
 
-[![Build Status](https://travis-ci.org/GerHobbelt/gitignore-parser.svg?branch=master)](https://travis-ci.org/GerHobbelt/gitignore-parser)
+[![Build Status](https://img.shields.io/travis/GerHobbelt/gitignore-parser/master.svg?style=flat)](https://travis-ci.org/GerHobbelt/gitignore-parser)
+[![NPM version](https://img.shields.io/npm/v/@gerhobbelt/gitignore-parser.svg?style=flat)](https://www.npmjs.org/package/@gerhobbelt/gitignore-parser)
+[![Coverage Status](https://img.shields.io/coveralls/GerHobbelt/gitignore-parser/master.svg?style=flat)](https://coveralls.io/r/GerHobbelt/gitignore-parser?branch=master)
 
 
 ## Installation
 
-`npm install gitignore-parser`
+`npm install @gerhobbelt/gitignore-parser`
 
 
 ## Usage
@@ -43,7 +45,6 @@ files.filter(gitignore.accepts);
 
 // only files that *are* gitignored
 files.filter(gitignore.denies);
-
 ```
 
 
