@@ -358,6 +358,12 @@ describe('gitignore parser', function () {
         let gitignore = LIB.compile('node-modules');
         gitignoreDenies(gitignore, 'packages/my-package/node-modules', true);
         gitignoreAccepts(gitignore, 'packages/my-package/node-modules', false);
+
+        gitignoreDenies(gitignore, 'packages/my-package/node-modules/a', true);
+        gitignoreAccepts(gitignore, 'packages/my-package/node-modules/a', false);
+
+        gitignoreDenies(gitignore, 'node-modules/a', true);
+        gitignoreAccepts(gitignore, 'node-modules/a', false);
       });
     });
 
