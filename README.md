@@ -16,11 +16,14 @@ A simple yet *complete* [`.gitignore`](https://git-scm.com/docs/gitignore#_patte
 
 Supports all features listed in the [GIT SCM gitignore manpage](https://git-scm.com/docs/gitignore):
 
-- handles the `**` wildcard
-- handles the `*` wildcard
-- handles the `?` wildcard
+- handles the `**` *wildcard* anywhere
+  + in both the usual usage, e.g. `foo/**/bar`, *and* also in complexes such as `yo/**la/bin`
+  + can be used multiple times in a single pattern, e.g. `foo/**/rec**on`
+- handles the `*` *wildcard*
+- handles the `?` *wildcard*
 - handles `[a-z]` style *character ranges*
 - understands `!`-prefixed *negated patterns*
+- understands `\#`, `\[`, `\\`, etc. filename *escapes*, thus handles patterns like `\#*#` correctly (*hint: this is NOT a comment line!*)
 - deals with any *sequence* of positive and negative patterns, like this one from the `.gitignore` manpage:
   
   ```
@@ -35,7 +38,11 @@ Supports all features listed in the [GIT SCM gitignore manpage](https://git-scm.
 
 - we're filename agnostic: the *"`.gitignore` file"* does not have to be named `.gitignore` but can be named anything: this parser accepts `.gitignore`-formatted content from anywhere: *you* load the file, *we* do the parsing, *you* feed our `accepts()` or `denies()` APIs any filenames / paths you want filtered and we'll tell you if it's a go or a *no go*.
 
-- extra: an additional API is available for those of you who wish to have the *complete and utter `.gitignore` experience*: use our `inspects(path)` API to know whether the given gitignore filter set did actively filter the given file or did simple allow it to pass through. Use this in directory trees where you have multiple `.gitignore` files in nested directories.
+- extra: an additional API is available for those of you who wish to have the *complete and utter `.gitignore` experience*: use our `inspects(path)` API to know whether the given gitignore filter set did actively filter the given file or did simple allow it to pass through.
+
+  ***Read as**: if the `.gitignore` has a pattern which matches the given file/path, then we will return `true`, otherwise we return `false`.*
+  
+  Use this in directory trees where you have multiple `.gitignore` files in nested directories and are implementing tooling with `git`-like `.gitignore` behaviour.
 
 ## Usage
 
@@ -90,7 +97,9 @@ files.filter(gitignore.denies);
 TBD
 
 https://github.com/isaacs/node-glob
-  
+
+
+
 
 ## License
 
