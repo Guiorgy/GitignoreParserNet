@@ -87,7 +87,7 @@ files.filter(gitignore.denies);
 
 ### Notes
 
-- As the `.gitignore` spec differentiates between *patterns* such as `foo` and `foo/`, where the latter only matches any **directory** named `foo`, you MUST pass the is-this-a-filee-or-a-directory info to us when you invoke any of our `accepts()`, `denies()` and `inspects()` APIs by making sure directory paths have a trailing `/`.
+- As the `.gitignore` spec differentiates between *patterns* such as `foo` and `foo/`, where the latter only matches any **directory** named `foo`, you MUST pass the is-this-a-file-or-a-directory info to us when you invoke any of our `accepts()`, `denies()` and `inspects()` APIs by making sure directory paths have a trailing `/`.
 
   When you feed us straight from [`glob()`](https://www.npmjs.com/package/glob), you can accomplish this in the quickest possible way by using the `glob()` [**`mark`** option](https://www.npmjs.com/package/glob#user-content-options) which auto-postfixes a `/` to each directory it produces.
 
