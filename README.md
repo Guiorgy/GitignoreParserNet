@@ -78,11 +78,11 @@ var files = [
   'node_modules/mocha/README.md'
 ];
 
-// only files that are not gitignored
-files.filter(gitignore.accepts);
+// produce only files that are not gitignored
+let list = files.filter(gitignore.accepts);
 
-// only files that *are* gitignored
-files.filter(gitignore.denies);
+// produce only files that *are* gitignored
+let list = files.filter(gitignore.denies);
 ```
 
 ### Notes
