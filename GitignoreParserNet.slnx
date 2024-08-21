@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="GitignoreParserNet.csproj" />
+  <Project Path="Tests/Tests.csproj">
+    <BuildDependency Project="GitignoreParserNet.csproj" />
+  </Project>
+</Solution>
