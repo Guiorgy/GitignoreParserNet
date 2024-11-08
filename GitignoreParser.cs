@@ -117,6 +117,7 @@ public sealed class GitignoreParser
     /// </summary>
     /// <param name="gitignorePath">Path to the gitignore file.</param>
     /// <param name="fileEncoding">The encoding applied to the contents of the file.</param>
+    /// <param name="directoryPath">The directory path to the contents of which to apply the gitignore rules.</param>
     /// <param name="compileRegex">If <see langword="true"/>, the Regex objects will be compiled to improve consecutive uses.</param>
     /// <returns>Files and directories filtered with the given gitignore rules.</returns>
     /// <exception cref="DirectoryNotFoundException">Couldn't find the parent dirrectory for <paramref name="gitignorePath"/>.</exception>
