@@ -1,4 +1,8 @@
 ﻿using System;
+#if !NET7_0_OR_GREATER
+using System.Collections.Generic;
+using System.Linq;
+#endif
 using System.Text;
 
 namespace GitignoreParserNet;
@@ -230,5 +234,26 @@ internal static class Extensions
     /// <param name="value">The character to find.</param>
     /// <returns><see langword="true"/> if value matches the end of this instance; otherwise, <see langword="false"/>.</returns>
     internal static bool EndsWith(this string @string, char value) => @string.Length >= 1 && @string[@string.Length - 1] == value;
+#endif
+
+#if !NET7_0_OR_GREATER
+    /// <summary>
+    /// Sorts the elements of a sequence in ascending order.
+    /// </summary>
+    /// <typeparam name="T">The type of the elements of <paramref name="source"/>.</typeparam>
+    /// <param name="source">A sequence of values to order.</param>
+    /// <returns>An <see cref="IOrderedEnumerable{TElement}"/> whose elements are sorted.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="source"/> is <see langword="null"/>.</exception>
+    /// <remarks>
+    /// <para>
+    /// This method is implemented by using deferred execution. The immediate return value is an object
+    /// that stores all the information that is required to perform the action.
+    /// The query represented by this method is not executed until the object is enumerated by calling
+    /// its <see cref="IEnumerable{T}.GetEnumerator"/> method.
+    ///
+    /// This method compares elements by using the default comparer <see cref="Comparer{T}.Default"/>.
+    /// </para>
+    /// </remarks>
+    internal static IOrderedEnumerable<T> Order<T>(this IEnumerable<T> source) => source.OrderBy(static x => x);
 #endif
 }

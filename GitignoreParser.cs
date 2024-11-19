@@ -81,7 +81,7 @@ public sealed class GitignoreParser
             }
             else
             {
-                var reList = list.OrderBy(str => str).Select(PrepareRegexPattern).ToList();
+                var reList = list.Order().Select(PrepareRegexPattern).ToList();
                 return (
                     new Regex($"(?:{string.Join(")|(?:", reList)})", regexOptions),
                     reList.Select(s => new Regex(s, regexOptions)).ToArray()
