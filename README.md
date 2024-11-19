@@ -4,7 +4,8 @@ A simple yet *complete* [`.gitignore`](https://git-scm.com/docs/gitignore#_patte
 
 ## Installation
 
-[![NuGet Badge](https://buildstats.info/nuget/GitignoreParserNet)](https://www.nuget.org/packages/GitignoreParserNet/0.2.0.13)
+[![NuGet Badge](https://badgen.net/nuget/v/GitignoreParserNet)](https://www.nuget.org/packages/GitignoreParserNet#versions-body-tab)
+[![NuGet Badge](https://badgen.net/nuget/dt/GitignoreParserNet)](https://www.nuget.org/stats/packages/GitignoreParserNet?groupby=Version)
 
 `Install-Package GitignoreParserNet -Version 0.2.0.13`
 
