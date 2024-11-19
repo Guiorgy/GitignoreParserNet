@@ -61,7 +61,7 @@ public sealed class GitignoreParser
             .Select(line => line.Trim())
             .Where(line => !string.IsNullOrWhiteSpace(line) && !line.StartsWith('#'))
             .Aggregate<string, (List<string>, List<string>), (List<string>, List<string>)>(
-                (new List<string>(), new List<string>()),
+                ([], []),
                 ((List<string> positive, List<string> negative) lists, string line) =>
                 {
                     if (line.StartsWith('!'))
