@@ -284,7 +284,7 @@ public sealed class GitignoreParser
     /// </remarks>
     public IEnumerable<string> Accepted(IEnumerable<string> inputs)
     {
-        return inputs.Where(Accepts);
+        return inputs.Where(f => Accepts(f));
     }
 
     /// <summary>
@@ -314,7 +314,7 @@ public sealed class GitignoreParser
     public IEnumerable<string> Accepted(DirectoryInfo directory)
     {
         var files = ListFiles(directory);
-        return files.Where(Accepts);
+        return files.Where(f => Accepts(f));
     }
 
     /// <summary>
@@ -447,7 +447,7 @@ public sealed class GitignoreParser
     /// </remarks>
     public IEnumerable<string> Denied(IEnumerable<string> inputs)
     {
-        return inputs.Where(Denies);
+        return inputs.Where(f => Denies(f));
     }
 
     /// <summary>
@@ -477,7 +477,7 @@ public sealed class GitignoreParser
     public IEnumerable<string> Denied(DirectoryInfo directory)
     {
         var files = ListFiles(directory);
-        return files.Where(Denies);
+        return files.Where(f => Denies(f));
     }
 
     /// <summary>
