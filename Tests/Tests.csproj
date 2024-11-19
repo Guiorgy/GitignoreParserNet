@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net481;net6.0;net8.0;net9.0</TargetFrameworks>
-    <LangVersion>12</LangVersion>
+    <LangVersion>13</LangVersion>
     <IsPackable>false</IsPackable>
     <Authors>Guiorgy</Authors>
     <Copyright>$(Authors)</Copyright>

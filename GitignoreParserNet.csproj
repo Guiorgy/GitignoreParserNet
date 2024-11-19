@@ -5,7 +5,7 @@
     <!-- <TargetFramework>netstandard2.0</TargetFramework> -->
     <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0;net8.0;net9.0</TargetFrameworks>
     <Nullable>enable</Nullable>
-    <LangVersion>12</LangVersion>
+    <LangVersion>13</LangVersion>
     <RootNamespace>GitignoreParserNet</RootNamespace>
     <Authors>Guiorgy</Authors>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
