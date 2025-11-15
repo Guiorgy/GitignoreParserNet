@@ -6,7 +6,7 @@
     <IsPackable>false</IsPackable>
     <Authors>Guiorgy</Authors>
     <Copyright>$(Authors)</Copyright>
-    <Version>0.2.0.13</Version>
+    <Version>0.2.0.15</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
