@@ -2,10 +2,9 @@
 
   <PropertyGroup>
     <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
-    <!-- <TargetFramework>netstandard2.0</TargetFramework> -->
-    <TargetFrameworks>netstandard2.0;netstandard2.1;net6.0;net8.0;net9.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net8.0;net9.0;net10.0</TargetFrameworks>
     <Nullable>enable</Nullable>
-    <LangVersion>13</LangVersion>
+    <LangVersion>latest</LangVersion>
     <RootNamespace>GitignoreParserNet</RootNamespace>
     <Authors>Guiorgy</Authors>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>

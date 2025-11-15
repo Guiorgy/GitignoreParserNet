@@ -70,7 +70,7 @@ public sealed class GitignoreParser
                         lists.positive.Add(line);
                     return (lists.positive, lists.negative);
                 },
-                ((List<string> positive, List<string> negative) lists) => lists
+                lists => lists
             );
 
         static (Regex Merged, Regex[] Individual) Submatch(List<string> list, RegexOptions regexOptions)
