@@ -36,7 +36,7 @@ internal static class TestHelper
 [TestClass]
 public class TestCaseA
 {
-    [TestMethod("should only accept a/2/a")]
+    [TestMethod(DisplayName = "should only accept a/2/a")]
     public void OnlyAcceptA2A()
     {
         var gitignore = new GitignoreParser(@"..\..\..\a\.gitignore-fixture", Encoding.UTF8);
@@ -48,7 +48,7 @@ public class TestCaseA
 [TestClass]
 public class TestIssueN11
 {
-    [TestMethod("should not fail test A")]
+    [TestMethod(DisplayName = "should not fail test A")]
     public void TestA()
     {
         var gitignore = new GitignoreParser("foo.txt");
@@ -56,7 +56,7 @@ public class TestIssueN11
         TestHelper.gitignoreAccepts(gitignore, "foo.txt", false);
     }
 
-    [TestMethod("should not fail test B")]
+    [TestMethod(DisplayName = "should not fail test B")]
     public void TestB()
     {
         var gitignore = new GitignoreParser("foo.txt");
@@ -68,28 +68,28 @@ public class TestIssueN11
 [TestClass]
 public class TestIssueN12
 {
-    [TestMethod("should not fail test A")]
+    [TestMethod(DisplayName = "should not fail test A")]
     public void TestA()
     {
         var gitignore = new GitignoreParser("/ajax/libs/bPopup/*b*");
         TestHelper.gitignoreAccepts(gitignore, "/ajax/libs/bPopup/0.9.0", true);  //output false
     }
 
-    [TestMethod("should not fail test B")]
+    [TestMethod(DisplayName = "should not fail test B")]
     public void TestB()
     {
         var gitignore = new GitignoreParser("/ajax/libs/jquery-form-validator/2.2");
         TestHelper.gitignoreAccepts(gitignore, "/ajax/libs/jquery-form-validator/2.2.43", true); //output false
     }
 
-    [TestMethod("should not fail test C")]
+    [TestMethod(DisplayName = "should not fail test C")]
     public void TestC()
     {
         var gitignore = new GitignoreParser("/ajax/libs/punycode/2.0");
         TestHelper.gitignoreAccepts(gitignore, "/ajax/libs/punycode/2.0.0", true); //output false
     }
 
-    [TestMethod("should not fail test D")]
+    [TestMethod(DisplayName = "should not fail test D")]
     public void TestD()
     {
         var gitignore = new GitignoreParser("/ajax/libs/typescript/*dev*");
@@ -100,7 +100,7 @@ public class TestIssueN12
 [TestClass]
 public class TestIssueN14
 {
-    [TestMethod("should not fail test A")]
+    [TestMethod(DisplayName = "should not fail test A")]
     public void TestA()
     {
         var gitignore = new GitignoreParser("node-modules");
@@ -120,7 +120,7 @@ public class TestIssueN14
 // when using the `expected` argument, accepts/denies should fire the `Diagnose()` callback
 public class TestDiagnose
 {
-    [TestMethod("Accepts() should fail and call Diagnose()")]
+    [TestMethod(DisplayName = "Accepts() should fail and call Diagnose()")]
     public void TestA()
     {
         var gitignore = new GitignoreParser("node_modules");
