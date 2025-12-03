@@ -49,7 +49,7 @@ public class TestAccepts
         );
     }
 
-    [TestMethod("should accept the given filenames")]
+    [TestMethod(DisplayName = "should accept the given filenames")]
     public void AcceptGivenFilenames()
     {
         gitignoreAccepts("test/index.js", true);
@@ -58,7 +58,7 @@ public class TestAccepts
         gitignoreNoNegativesAccepts("node_modules.json", true);
     }
 
-    [TestMethod("should not accept the given filenames")]
+    [TestMethod(DisplayName = "should not accept the given filenames")]
     public void NotAcceptGivenFilenames()
     {
         gitignoreAccepts("test.swp", false);
@@ -68,7 +68,7 @@ public class TestAccepts
         gitignoreNoNegativesAccepts("node_modules/wat.js", false);
     }
 
-    [TestMethod("should not accept the given directories")]
+    [TestMethod(DisplayName = "should not accept the given directories")]
     public void NotAcceptGivenDirectories()
     {
         gitignoreAccepts("nonexistent", false);
@@ -76,13 +76,13 @@ public class TestAccepts
         gitignoreNoNegativesAccepts("node_modules", false);
     }
 
-    [TestMethod("should accept unignored files in ignored directories")]
+    [TestMethod(DisplayName = "should accept unignored files in ignored directories")]
     public void AcceptUnignoredFilesInIgnoredDirectories()
     {
         gitignoreAccepts("nonexistent/foo", true);
     }
 
-    [TestMethod("should accept nested unignored files in ignored directories")]
+    [TestMethod(DisplayName = "should accept nested unignored files in ignored directories")]
     public void AcceptNestedUnignoredFilesInIgnoredDirectories()
     {
         gitignoreAccepts("nonexistent/foo/wat", true);
@@ -133,7 +133,7 @@ public class TestDenies
         );
     }
 
-    [TestMethod("should deny the given filenames")]
+    [TestMethod(DisplayName = "should deny the given filenames")]
     public void DenyGivenFilenames()
     {
         gitignoreDenies("test.swp", true);
@@ -143,7 +143,7 @@ public class TestDenies
         gitignoreNoNegativesDenies("node_modules/wat.js", true);
     }
 
-    [TestMethod("should not deny the given filenames")]
+    [TestMethod(DisplayName = "should not deny the given filenames")]
     public void NotDenyGivenFilenames()
     {
         gitignoreDenies("test/index.js", false);
@@ -153,7 +153,7 @@ public class TestDenies
         gitignoreNoNegativesDenies("node_modules.json", false);
     }
 
-    [TestMethod("should deny the given directories")]
+    [TestMethod(DisplayName = "should deny the given directories")]
     public void DenyGivenDirectories()
     {
         gitignoreDenies("nonexistent", true);
@@ -162,13 +162,13 @@ public class TestDenies
         gitignoreNoNegativesDenies("node_modules/foo", true);
     }
 
-    [TestMethod("should not deny unignored files in ignored directories")]
+    [TestMethod(DisplayName = "should not deny unignored files in ignored directories")]
     public void NotDenyUnignoredFilesInIgnoredDirectories()
     {
         gitignoreDenies("nonexistent/foo", false);
     }
 
-    [TestMethod("should not deny nested unignored files in ignored directories")]
+    [TestMethod(DisplayName = "should not deny nested unignored files in ignored directories")]
     public void NotDenyNestedUnignoredFilesInIgnoredDirectories()
     {
         gitignoreDenies("nonexistent/foo/wat", false);
@@ -219,7 +219,7 @@ public class TestInspects
         );
     }
 
-    [TestMethod("should return false for directories not mentioned by .gitignore")]
+    [TestMethod(DisplayName = "should return false for directories not mentioned by .gitignore")]
     public void FalseForDirectoriesNotInGitignore()
     {
         gitignoreIsInspected("lib", false);
@@ -228,7 +228,7 @@ public class TestInspects
         gitignoreNoNegativesIsInspected("lib/foo/bar", false);
     }
 
-    [TestMethod("should return true for directories explicitly mentioned by .gitignore")]
+    [TestMethod(DisplayName = "should return true for directories explicitly mentioned by .gitignore")]
     public void TrueForDirectoriesInGitignore()
     {
         gitignoreIsInspected("baz", true);
@@ -236,7 +236,7 @@ public class TestInspects
         gitignoreNoNegativesIsInspected("node_modules", true);
     }
 
-    [TestMethod("should return true for ignored directories that have exceptions")]
+    [TestMethod(DisplayName = "should return true for ignored directories that have exceptions")]
     public void TrueForIgnoredDirecrotiesWithExceptions()
     {
         gitignoreIsInspected("nonexistent", true);
@@ -244,7 +244,7 @@ public class TestInspects
         gitignoreIsInspected("nonexistent/foo/bar", true);
     }
 
-    [TestMethod("should return true for non exceptions of ignored subdirectories")]
+    [TestMethod(DisplayName = "should return true for non exceptions of ignored subdirectories")]
     public void TrueForNonExceptionsOfIgnoredSubdirectories()
     {
         gitignoreIsInspected("nonexistent/wat", true);
