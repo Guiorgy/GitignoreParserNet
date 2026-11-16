@@ -49,7 +49,7 @@ internal static class Extensions
         /// <summary>
         /// Prepends a copy of the specified string to this instance.
         /// </summary>
-        /// <param name="builder">The instance to prepend.</param>        /// <param name="value">The string to prepend.</param>
+        /// <param name="value">The string to prepend.</param>
         /// <returns>A reference to this instance after the append operation has completed.</returns>
         /// <exception cref="ArgumentOutOfRangeException">
         /// Eenlarging the value of this instance would exceed <see cref="StringBuilder.MaxCapacity"/>.
