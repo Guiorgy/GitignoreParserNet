@@ -145,10 +145,11 @@ public sealed class GitignoreParser
     {
         var directoryPath = directory.FullName;
 
-        return ((IEnumerable<string>)["/"]).Concat(
-            Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories)
-                .Select(f => f.Substring(directoryPath.Length + 1))
-        ).ToArray();
+        return [
+            "/",
+            .. Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories)
+                .Select(f => f.Substring(directoryPath.Length + 1)),
+        ];
     }
 
     /// <summary>
@@ -159,7 +160,7 @@ public sealed class GitignoreParser
     private (string FilePath, bool Accepted, bool Denied)[] ProcessFiles(DirectoryInfo directory)
     {
         var files = ListFiles(directory);
-        return files.Select(f => (FilePath: f, Accepted: Accepts(f), Denied: Denies(f))).ToArray();
+        return [.. files.Select(f => (FilePath: f, Accepted: Accepts(f), Denied: Denies(f)))];
     }
 
     /// <summary>
