@@ -149,6 +149,10 @@ visual_basic_preferred_modifier_order = Partial,Default,Private,Protected,Public
 # Reason: Non standard warnings should be left in to support smoother merge to upstream
 dotnet_diagnostic.IDE0079.severity = silent
 
+# IDE0130: Namespace does not match folder structure
+# Reason: Namespaces and folders follow different grouping strategies
+dotnet_diagnostic.IDE0130.severity = none
+
 # IDE0057: Use range operator
 # Reason: Range operators are not suppored by netstandard
 dotnet_diagnostic.IDE0057.severity = silent
